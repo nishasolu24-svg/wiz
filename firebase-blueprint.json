@@ -1,0 +1,69 @@
+{
+  "entities": {
+    "UserProfile": {
+      "collection": "users",
+      "fields": {
+        "email": { "type": "string", "description": "Teacher email address" },
+        "displayName": { "type": "string", "description": "Teacher display name" },
+        "schoolName": { "type": "string", "description": "School or institution name" },
+        "role": { "type": "string", "description": "User role (teacher or admin)" },
+        "isAdmin": { "type": "boolean", "description": "Flag indicating master administrative authority" },
+        "tier": { "type": "string", "description": "Account classification tier: free, pro, or school" },
+        "tierExpiresAt": { "type": "string", "description": "Expiration date for paid tier or null" },
+        "subscriptionId": { "type": "string", "description": "Active subscription reference ID" },
+        "paymentProvider": { "type": "string", "description": "Payment gateway provider name" },
+        "dailyGenerationsUsed": { "type": "number", "description": "Number of AI generations used today" },
+        "lastGenerationDate": { "type": "string", "description": "YYYY-MM-DD string of last usage" },
+        "createdAt": { "type": "string", "description": "ISO timestamp of account creation" },
+        "updatedAt": { "type": "string", "description": "ISO timestamp of last update" }
+      }
+    },
+    "Subscription": {
+      "collection": "subscriptions",
+      "fields": {
+        "userId": { "type": "string", "description": "UID of subscribing user" },
+        "planId": { "type": "string", "description": "Identifier of the plan purchased" },
+        "tier": { "type": "string", "description": "Tier granted by the subscription: pro or school" },
+        "amount": { "type": "number", "description": "Subscription amount in cents or dollars" },
+        "currency": { "type": "string", "description": "Currency code (e.g. usd)" },
+        "status": { "type": "string", "description": "Subscription status: active, canceled, etc." },
+        "provider": { "type": "string", "description": "Payment gateway: stripe or paypal" },
+        "currentPeriodEnd": { "type": "string", "description": "End timestamp of current billing period" },
+        "createdAt": { "type": "string", "description": "Timestamp of payment creation" }
+      }
+    },
+    "SavedWorksheet": {
+      "collection": "worksheets",
+      "fields": {
+        "userId": { "type": "string", "description": "Owner user ID" },
+        "title": { "type": "string", "description": "Worksheet title" },
+        "subject": { "type": "string", "description": "Academic subject" },
+        "gradeLevel": { "type": "string", "description": "Target grade level" },
+        "topic": { "type": "string", "description": "Topic or focus of the worksheet" },
+        "data": { "type": "string", "description": "Serialized worksheet payload" },
+        "createdAt": { "type": "string", "description": "Creation timestamp" }
+      }
+    },
+    "WaitlistEntry": {
+      "collection": "waitlist",
+      "fields": {
+        "email": { "type": "string", "description": "Interested educator email address" },
+        "planInterest": { "type": "string", "description": "pro or school tier" },
+        "createdAt": { "type": "string", "description": "Timestamp of waitlist registration" }
+      }
+    },
+    "PlatformAnalytics": {
+      "collection": "analytics",
+      "fields": {
+        "totalVisits": { "type": "number", "description": "Total visits across all users and devices" },
+        "todayVisits": { "type": "number", "description": "Visits recorded today" },
+        "worksheetsGenerated": { "type": "number", "description": "Total worksheets generated platform-wide" },
+        "worksheetsGeneratedToday": { "type": "number", "description": "Worksheets generated today" },
+        "uniqueVisitors": { "type": "number", "description": "Count of unique browser visitors" },
+        "activeSessions": { "type": "number", "description": "Estimated active concurrent sessions" },
+        "currentDay": { "type": "string", "description": "YYYY-MM-DD tracking current day for daily resets" },
+        "lastUpdated": { "type": "string", "description": "ISO timestamp of last update" }
+      }
+    }
+  }
+}

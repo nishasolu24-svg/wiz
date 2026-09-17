@@ -1,0 +1,6 @@
+{
+  "name": "WizSheet AI",
+  "description": "Customized quiz and practice worksheet generator for teachers to build assessments from uploaded book PDFs, free educational diagrams, printable handouts, and answer keys.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
