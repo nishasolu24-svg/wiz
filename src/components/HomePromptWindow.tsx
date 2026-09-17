@@ -280,22 +280,22 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
   };
 
   return (
-    <div className="no-print bg-white rounded-2xl border border-indigo-100 shadow-md shadow-indigo-100/50 overflow-hidden transition-all">
+    <div className="no-print bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all">
       {/* Top Banner / Prompt Window Header */}
-      <div className="bg-gradient-to-r from-violet-600 via-indigo-600 to-pink-600 px-5 sm:px-6 py-4 text-white flex flex-wrap items-center justify-between gap-3 shadow-xs">
+      <div className="bg-slate-900 px-5 sm:px-6 py-3.5 text-white flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-xs text-white flex items-center justify-center shadow-xs shrink-0 border border-white/30">
-            <Sparkles className="w-5 h-5 text-amber-300" />
+          <div className="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 border border-indigo-400/30">
+            <Sparkles className="w-4 h-4 text-amber-300" />
           </div>
           <div>
-            <h2 className="text-sm sm:text-base font-extrabold text-white tracking-tight flex items-center gap-2">
-              <span>Questionnaire & Assessment Studio</span>
-              <span className="hidden sm:inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white/20 text-white border border-white/30 backdrop-blur-xs">
-                ⚡ Powered by Gemini AI
+            <h2 className="text-sm sm:text-base font-bold text-white tracking-tight flex items-center gap-2">
+              <span>Assessment & Quiz Generator</span>
+              <span className="hidden sm:inline-flex px-2 py-0.5 rounded text-[10px] font-medium bg-slate-800 text-slate-300 border border-slate-700">
+                Gemini AI
               </span>
             </h2>
-            <p className="text-xs text-indigo-100 font-medium">
-              Generate custom questionnaires, configure complexity & question types, or launch the interactive online test
+            <p className="text-xs text-slate-400">
+              Customize subject, difficulty, and question format to create assessments
             </p>
           </div>
         </div>
@@ -313,16 +313,16 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
                 onOpenBookPdfModal();
               }}
               id="btn-home-open-book-modal"
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-violet-950 hover:bg-violet-50 shadow-sm transition-all active:scale-98 cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all cursor-pointer"
               title="Upload any Book or PDF to ask questions grounded directly in the text"
             >
-              <BookOpen className="w-3.5 h-3.5 text-violet-600" />
+              <BookOpen className="w-3.5 h-3.5 text-indigo-400" />
               <span>Ask from Book / PDF</span>
             </button>
           )}
 
           {/* Option to Take Test Online */}
-          {onTakeTestOnline && (
+          {hasCurrentWorksheet && onTakeTestOnline && (
             <button
               type="button"
               onClick={() => {
@@ -333,14 +333,11 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
                 onTakeTestOnline();
               }}
               id="btn-home-take-test-online"
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-emerald-400 to-teal-400 text-emerald-950 hover:from-emerald-300 hover:to-teal-300 shadow-sm transition-all active:scale-98 cursor-pointer"
-              title="Launch interactive online test mode with real-time scoring and timer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-all cursor-pointer"
+              title="Launch interactive online test mode"
             >
-              <Play className="w-3.5 h-3.5 fill-current" />
+              <Play className="w-3 h-3 fill-current" />
               <span>Take Test Online</span>
-              <span className="hidden md:inline-flex px-1.5 py-0.2 rounded text-[10px] font-extrabold bg-emerald-900/20 text-emerald-950">
-                Live Quiz
-              </span>
             </button>
           )}
 
@@ -349,115 +346,66 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
             type="button"
             onClick={() => setShowOptions(!showOptions)}
             id="btn-toggle-advanced-settings"
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-white/15 hover:bg-white/25 text-white border border-white/20 transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-all"
           >
             <SlidersHorizontal className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">{showOptions ? 'Less Options' : 'More Settings'}</span>
+            <span className="hidden sm:inline">{showOptions ? 'Hide Directives' : 'Custom Directives'}</span>
             {showOptions ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
           </button>
         </div>
       </div>
 
       {/* Main Prompt Window Form */}
-      <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-5 bg-gradient-to-b from-slate-50/50 to-white">
-        {/* Sign In Required Notice Banner when unauthenticated */}
+      <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-4 bg-white">
+        {/* Sign In Notice when unauthenticated */}
         {!userIsLoggedIn && (
-          <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/10 via-violet-500/10 to-indigo-500/10 border-2 border-amber-300/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
-            <div className="flex items-start gap-3">
-              <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-900 flex items-center justify-center shrink-0 shadow-2xs">
-                <Lock className="w-5 h-5 text-amber-700" />
-              </div>
-              <div>
-                <h4 className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
-                  <span>Sign In Required</span>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-200 text-amber-950">
-                    Authentication Gate
-                  </span>
-                </h4>
-                <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
-                  All features in WizSheet AI — AI assessment generation, textbook PDF comprehension, instant differentiation, and printable exports — require signing in.
-                </p>
-              </div>
+          <div className="p-3.5 rounded-xl bg-amber-50/80 border border-amber-200/90 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-amber-900 text-xs">
+            <div className="flex items-center gap-2.5">
+              <Lock className="w-4 h-4 text-amber-700 shrink-0" />
+              <span>
+                <strong>Sign in required:</strong> Log in to generate custom questionnaires, analyze textbook PDFs, and save assessments.
+              </span>
             </div>
             <button
               type="button"
               onClick={() => onOpenAuth?.('signin')}
               id="btn-banner-sign-in-prompt"
-              className="shrink-0 px-4 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-extrabold text-xs rounded-xl shadow-md shadow-violet-200 transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer"
+              className="shrink-0 px-3.5 py-1.5 bg-amber-700 hover:bg-amber-800 text-white font-semibold text-xs rounded-lg transition-colors cursor-pointer"
             >
-              <User className="w-3.5 h-3.5" />
-              <span>Sign In / Register</span>
+              Sign In / Register
             </button>
           </div>
         )}
+
         {/* Error message */}
         {error && (
-          <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-300 text-rose-800 text-xs flex items-center gap-2.5 font-medium shadow-2xs">
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0 animate-ping" />
+          <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2 font-medium">
+            <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
-        {/* Book / PDF Feature Card */}
-        {onOpenBookPdfModal && (
-          <div className="p-3 sm:p-3.5 bg-gradient-to-r from-violet-50 via-indigo-50 to-fuchsia-50 border border-violet-200/80 rounded-xl flex flex-wrap items-center justify-between gap-3 shadow-2xs">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 text-white flex items-center justify-center shrink-0 shadow-sm shadow-violet-200">
-                <BookOpen className="w-4 h-4 text-amber-300" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs sm:text-sm font-black text-slate-900">
-                    Ask Questions Directly from a Book or PDF
-                  </span>
-                  <span className="px-2 py-0.2 rounded-full text-[10px] font-black bg-violet-200 text-violet-900 uppercase tracking-wide">
-                    New
-                  </span>
-                </div>
-                <p className="text-[11px] text-slate-600">
-                  Upload textbooks, novels, or articles. WizSheet AI extracts the text and creates questions with citations.
-                </p>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              onClick={onOpenBookPdfModal}
-              id="btn-banner-upload-book"
-              className="flex items-center gap-1.5 px-3.5 py-1.5 sm:py-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold shadow-sm shadow-violet-200 transition-all active:scale-98"
-            >
-              <Upload className="w-3.5 h-3.5" />
-              <span>Upload Book / PDF</span>
-            </button>
-          </div>
-        )}
-
         {/* Primary Prompt Input Bar */}
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <label className="block text-xs font-black bg-gradient-to-r from-violet-700 to-indigo-700 bg-clip-text text-transparent uppercase tracking-wider">
-              Questionnaire Topic or Learning Standard
-            </label>
-            <span className="text-[11px] text-indigo-500 font-semibold hidden sm:inline">
-              ✨ Type any subject or pick a colorful starter below
-            </span>
-          </div>
-          <div className="relative flex flex-col sm:flex-row gap-2.5">
+        <div className="space-y-2">
+          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+            Assessment Topic or Standard
+          </label>
+          <div className="relative flex flex-col sm:flex-row gap-2">
             <div className="relative flex-1">
               <input
                 type="text"
                 value={topic}
                 onChange={(e) => handleTopicChange(e.target.value)}
-                placeholder="e.g. Simple addition for grade 1, Photosynthesis, Fractions, World War II Causes..."
+                placeholder="e.g., Photosynthesis, Fraction Operations, US Constitution, தமிழ் திருக்குறள்..."
                 disabled={isGenerating}
                 id="input-questionnaire-topic"
-                className="w-full pl-4 pr-10 py-3.5 bg-white border-2 border-indigo-200/80 rounded-xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-4 focus:ring-purple-400/20 focus:border-purple-500 transition-all placeholder:text-slate-400 shadow-2xs"
+                className="w-full pl-3.5 pr-10 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm font-medium text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all placeholder:text-slate-400"
               />
               {topic && !isGenerating && (
                 <button
                   type="button"
                   onClick={() => setTopic('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-rose-600 text-xs p-1 rounded font-bold"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs p-1"
                   title="Clear topic"
                 >
                   ✕
@@ -470,93 +418,39 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
                 type="button"
                 onClick={() => onOpenAuth?.('signin')}
                 id="btn-home-generate-questionnaire"
-                className="px-7 py-3.5 bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-700 hover:from-violet-700 hover:via-indigo-700 hover:to-purple-800 text-white rounded-xl font-black text-sm shadow-lg shadow-purple-300/60 transition-all flex items-center justify-center gap-2 shrink-0 active:scale-98 cursor-pointer"
+                className="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer"
               >
-                <Lock className="w-4 h-4 text-amber-300" />
+                <Lock className="w-4 h-4 text-indigo-200" />
                 <span>Sign In to Build</span>
-                <ArrowRight className="w-4 h-4 ml-0.5" />
               </button>
             ) : (
               <button
                 type="submit"
                 disabled={isGenerating || !topic.trim()}
                 id="btn-home-generate-questionnaire"
-                className="px-7 py-3.5 bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 hover:from-violet-700 hover:via-fuchsia-700 hover:to-pink-700 text-white rounded-xl font-black text-sm shadow-lg shadow-purple-300/60 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 shrink-0 active:scale-98"
+                className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 shrink-0 active:scale-98 shadow-xs"
               >
                 {isGenerating ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin text-amber-200" />
-                    <span>Generating Questionnaire...</span>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Generating...</span>
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-4 h-4 text-amber-300" />
-                    <span>Build Questionnaire</span>
-                    <ArrowRight className="w-4 h-4 ml-0.5" />
+                    <span>Generate Assessment</span>
                   </>
                 )}
               </button>
             )}
           </div>
-
-          {/* Smart Subject & Grade Selector Badges */}
-          <div className="flex items-center flex-wrap gap-2 pt-2.5">
-            <div className="flex items-center gap-1.5 bg-indigo-50 border border-indigo-200/80 px-3 py-1 rounded-xl shadow-2xs">
-              <span className="font-extrabold text-indigo-950 text-[11px] flex items-center gap-1">
-                <BookOpen className="w-3.5 h-3.5 text-indigo-600" />
-                <span>Subject:</span>
-              </span>
-              <select
-                value={subject}
-                onChange={(e) => {
-                  setSubject(e.target.value);
-                  setUserSelectedSubject(true);
-                }}
-                disabled={isGenerating}
-                className="bg-transparent font-black text-indigo-700 text-xs focus:outline-none cursor-pointer pr-1"
-                title="Select subject domain"
-              >
-                {SUBJECTS.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex items-center gap-1.5 bg-purple-50 border border-purple-200/80 px-3 py-1 rounded-xl shadow-2xs">
-              <span className="font-extrabold text-purple-950 text-[11px] flex items-center gap-1">
-                <span>🎓 Grade:</span>
-              </span>
-              <select
-                value={gradeLevel}
-                onChange={(e) => {
-                  setGradeLevel(e.target.value);
-                  setUserSelectedGrade(true);
-                }}
-                disabled={isGenerating}
-                className="bg-transparent font-black text-purple-700 text-xs focus:outline-none cursor-pointer pr-1"
-                title="Select target grade level"
-              >
-                {GRADE_LEVELS.map((g) => (
-                  <option key={g} value={g}>
-                    {g}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <span className="text-[11px] text-slate-500 font-medium hidden md:inline ml-auto">
-              Auto-detected from prompt • Click dropdowns to customize
-            </span>
-          </div>
         </div>
 
-        {/* Quick Topic Starter Badges */}
+        {/* Quick Topic Starter Chips */}
         <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider flex items-center gap-1 mr-1">
+          <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1 mr-1">
             <Lightbulb className="w-3.5 h-3.5 text-amber-500" />
-            <span>Try:</span>
+            <span>Popular:</span>
           </span>
           {QUICK_TOPICS.map((item, idx) => (
             <button
@@ -564,43 +458,76 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
               type="button"
               onClick={() => handleQuickTopic(item)}
               disabled={isGenerating}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all shadow-2xs hover:scale-105 ${item.colorClass}`}
+              className="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 hover:bg-indigo-50 text-slate-700 hover:text-indigo-700 border border-slate-200/80 hover:border-indigo-200 transition-colors"
             >
               {item.label}
             </button>
           ))}
         </div>
 
-        {/* Core Quick Controls: Complexity, No. of Questions, Question Type */}
-        <div className="pt-3 border-t border-indigo-100/80 grid grid-cols-1 lg:grid-cols-3 gap-5">
-          {/* 1. Complexity Marking: Beginner, Intermediate, Expert */}
-          <div className="space-y-2">
+        {/* Core Controls Grid: Subject & Grade, Complexity, Volume, Format */}
+        <div className="pt-3 border-t border-slate-200 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Subject Selector */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+              Subject Domain
+            </label>
+            <select
+              value={subject}
+              onChange={(e) => {
+                setSubject(e.target.value);
+                setUserSelectedSubject(true);
+              }}
+              disabled={isGenerating}
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 cursor-pointer"
+            >
+              {SUBJECTS.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Grade Level */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+              Target Grade
+            </label>
+            <select
+              value={gradeLevel}
+              onChange={(e) => {
+                setGradeLevel(e.target.value);
+                setUserSelectedGrade(true);
+              }}
+              disabled={isGenerating}
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 cursor-pointer"
+            >
+              {GRADE_LEVELS.map((g) => (
+                <option key={g} value={g}>
+                  {g}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Complexity Level */}
+          <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-black bg-gradient-to-r from-emerald-600 via-blue-600 to-purple-600 bg-clip-text text-transparent uppercase tracking-wider flex items-center gap-1.5">
-                <span>Complexity</span>
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                Complexity
               </label>
-              <span className="text-[11px] font-bold text-slate-500 capitalize">
-                {difficulty === 'beginner'
-                  ? '🟢 Beginner Level'
-                  : difficulty === 'expert'
-                  ? '🟣 Expert Level'
-                  : '🔵 Intermediate Level'}
+              <span className="text-[10px] font-bold text-indigo-600 capitalize">
+                {difficulty}
               </span>
             </div>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
               {COMPLEXITY_LEVELS.map((lvl) => {
                 const isSelected =
                   difficulty === lvl.id ||
                   (lvl.id === 'beginner' && difficulty === 'foundational') ||
                   (lvl.id === 'intermediate' && difficulty === 'standard') ||
                   (lvl.id === 'expert' && difficulty === 'advanced');
-
-                const selectedClasses =
-                  lvl.id === 'beginner'
-                    ? 'bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-500 text-emerald-950 shadow-sm ring-2 ring-emerald-300'
-                    : lvl.id === 'expert'
-                    ? 'bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-500 text-purple-950 shadow-sm ring-2 ring-purple-300'
-                    : 'bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-500 text-blue-950 shadow-sm ring-2 ring-blue-300';
 
                 return (
                   <button
@@ -609,97 +536,31 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
                     onClick={() => setDifficulty(lvl.id)}
                     disabled={isGenerating}
                     id={`btn-complexity-${lvl.id}`}
-                    className={`px-2.5 py-2.5 rounded-xl text-left transition-all relative flex flex-col justify-between ${
+                    className={`py-1.5 rounded-lg text-xs font-semibold text-center transition-all ${
                       isSelected
-                        ? selectedClasses
-                        : 'bg-white border border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50'
+                        ? 'bg-white text-indigo-700 shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
-                    <div className="flex items-center justify-between w-full mb-1">
-                      <span className="font-extrabold text-xs flex items-center gap-1.5">
-                        <span
-                          className={`w-2.5 h-2.5 rounded-full ${
-                            lvl.id === 'beginner'
-                              ? 'bg-emerald-500'
-                              : lvl.id === 'expert'
-                              ? 'bg-purple-600'
-                              : 'bg-blue-500'
-                          }`}
-                        />
-                        {lvl.label}
-                      </span>
-                      {isSelected && <Check className="w-3.5 h-3.5 text-current shrink-0 stroke-[3]" />}
-                    </div>
-                    <span className="text-[10px] text-slate-500 font-medium leading-tight line-clamp-2">
-                      {lvl.id === 'beginner'
-                        ? 'Clear basics & support'
-                        : lvl.id === 'expert'
-                        ? 'Rigorous critical analysis'
-                        : 'Standard grade mastery'}
-                    </span>
+                    {lvl.label}
                   </button>
                 );
               })}
             </div>
           </div>
 
-          {/* 2. Option to select number of questions */}
-          <div className="space-y-2">
+          {/* Question Format */}
+          <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-black bg-gradient-to-r from-violet-700 to-indigo-700 bg-clip-text text-transparent uppercase tracking-wider flex items-center gap-1.5">
-                <span>No. of Questions</span>
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                Question Format
               </label>
-              <span className="text-[11px] font-extrabold text-violet-700 bg-violet-100 px-2.5 py-0.5 rounded-full border border-violet-200">
-                {questionCount} Questions
-              </span>
             </div>
-            <div className="flex items-center gap-1.5 flex-wrap">
-              {QUESTION_COUNT_OPTIONS.map((cnt) => (
-                <button
-                  key={cnt}
-                  type="button"
-                  onClick={() => setQuestionCount(cnt)}
-                  disabled={isGenerating}
-                  id={`btn-question-count-${cnt}`}
-                  className={`flex-1 min-w-[42px] py-2 rounded-xl text-xs font-black border transition-all text-center ${
-                    questionCount === cnt
-                      ? 'bg-gradient-to-r from-violet-600 to-indigo-600 border-transparent text-white shadow-md shadow-violet-200 ring-2 ring-violet-300 scale-105'
-                      : 'bg-white hover:bg-violet-50/60 border-slate-200 text-slate-700 hover:text-violet-900'
-                  }`}
-                >
-                  {cnt}
-                </button>
-              ))}
-            </div>
-            <div className="text-[10px] text-slate-400 font-medium">
-              Select question volume for practice, quick exit tickets (3-5), or comprehensive tests (10-20).
-            </div>
-          </div>
-
-          {/* 3. Option to select Multiple Choice or Fill in the Blank */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-black bg-gradient-to-r from-cyan-600 via-amber-600 to-fuchsia-600 bg-clip-text text-transparent uppercase tracking-wider flex items-center gap-1.5">
-                <span>Question Type</span>
-              </label>
-              <span className="text-[11px] font-bold text-slate-500">
-                {questionFormat === 'multiple_choice'
-                  ? 'Multiple Choice'
-                  : questionFormat === 'fill_blank'
-                  ? 'Fill in Blank'
-                  : 'Mixed 50/50'}
-              </span>
-            </div>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
               {QUESTION_FORMATS.map((fmt) => {
                 const isSelected = questionFormat === fmt.id;
-                const formatSelectedClasses =
-                  fmt.id === 'multiple_choice'
-                    ? 'bg-gradient-to-br from-cyan-50 to-blue-50 border-2 border-cyan-500 text-cyan-950 ring-2 ring-cyan-200 shadow-sm'
-                    : fmt.id === 'fill_blank'
-                    ? 'bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-500 text-amber-950 ring-2 ring-amber-200 shadow-sm'
-                    : 'bg-gradient-to-br from-fuchsia-50 to-pink-50 border-2 border-fuchsia-500 text-fuchsia-950 ring-2 ring-fuchsia-200 shadow-sm';
-
+                const shortLabel =
+                  fmt.id === 'multiple_choice' ? 'MCQ' : fmt.id === 'fill_blank' ? 'Fill Blank' : 'Mixed';
                 return (
                   <button
                     key={fmt.id}
@@ -707,27 +568,14 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
                     onClick={() => setQuestionFormat(fmt.id)}
                     disabled={isGenerating}
                     id={`btn-format-${fmt.id}`}
-                    className={`p-2 rounded-xl text-left transition-all flex flex-col justify-between ${
+                    title={fmt.label}
+                    className={`py-1.5 rounded-lg text-xs font-semibold text-center transition-all ${
                       isSelected
-                        ? formatSelectedClasses
-                        : 'bg-white border border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50'
+                        ? 'bg-white text-indigo-700 shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
-                    <div className="flex items-center justify-between w-full mb-1">
-                      <span className="font-extrabold text-xs truncate">{fmt.label}</span>
-                      {isSelected && <Check className="w-3.5 h-3.5 text-current shrink-0 stroke-[3]" />}
-                    </div>
-                    <span
-                      className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full inline-block truncate ${
-                        fmt.id === 'multiple_choice'
-                          ? 'bg-cyan-100 text-cyan-800'
-                          : fmt.id === 'fill_blank'
-                          ? 'bg-amber-100 text-amber-800'
-                          : 'bg-fuchsia-100 text-fuchsia-800'
-                      }`}
-                    >
-                      {fmt.badge}
-                    </span>
+                    {shortLabel}
                   </button>
                 );
               })}
@@ -735,103 +583,50 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
           </div>
         </div>
 
-        {/* Quick Action Footer: Take Test Online callout banner */}
-        {hasCurrentWorksheet && onTakeTestOnline && (
-          <div className="p-4 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-600 rounded-2xl text-white shadow-md shadow-teal-200 flex flex-wrap items-center justify-between gap-3 transform hover:scale-[1.005] transition-all">
-            <div className="flex items-center gap-3">
-              <span className="w-9 h-9 rounded-xl bg-white text-emerald-700 flex items-center justify-center shrink-0 shadow-md">
-                <Play className="w-4 h-4 fill-current ml-0.5" />
-              </span>
-              <div>
-                <div className="text-sm font-black text-white flex items-center gap-2">
-                  <span>Take Test Online Available</span>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-400 text-amber-950 uppercase tracking-wide">
-                    Interactive
-                  </span>
-                </div>
-                <p className="text-xs text-emerald-50 font-medium">
-                  Assess students directly in browser with digital answer inputs, countdown timer, auto-grading & celebration confetti
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              {onOpenCustomQuestion && (
+        {/* Question Count Pill Bar */}
+        <div className="flex items-center justify-between pt-2 border-t border-slate-100 flex-wrap gap-2">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+              Question Volume:
+            </span>
+            <div className="flex items-center gap-1">
+              {QUESTION_COUNT_OPTIONS.map((cnt) => (
                 <button
+                  key={cnt}
                   type="button"
-                  onClick={onOpenCustomQuestion}
-                  className="px-4 py-2.5 bg-emerald-700/60 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl border border-emerald-300/40 shadow-xs transition-all flex items-center gap-1.5 active:scale-95"
+                  onClick={() => setQuestionCount(cnt)}
+                  disabled={isGenerating}
+                  id={`btn-question-count-${cnt}`}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                    questionCount === cnt
+                      ? 'bg-indigo-600 text-white shadow-xs'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                  }`}
                 >
-                  <Plus className="w-3.5 h-3.5 stroke-[3]" />
-                  <span>+ Custom Question</span>
+                  {cnt}
                 </button>
-              )}
-              <button
-                type="button"
-                onClick={onTakeTestOnline}
-                className="px-5 py-2.5 bg-white hover:bg-emerald-50 text-emerald-900 font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center gap-2 active:scale-95"
-              >
-                <Play className="w-3.5 h-3.5 fill-current" />
-                <span>Launch Online Test</span>
-              </button>
+              ))}
             </div>
           </div>
-        )}
+          <span className="text-[11px] text-slate-400 font-medium">
+            3-5 for quick warmup • 8-10 for standard quiz • 15-20 for full test
+          </span>
+        </div>
 
-        {/* Expandable Questionnaire Configuration Panel */}
+        {/* Expandable Custom Instructions Panel */}
         {showOptions && (
-          <div className="pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-fadeIn">
-            {/* Subject Area */}
-            <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
-                Subject Domain
-              </label>
-              <select
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-                disabled={isGenerating}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
-              >
-                {SUBJECTS.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Target Grade Level */}
-            <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
-                Target Grade Level
-              </label>
-              <select
-                value={gradeLevel}
-                onChange={(e) => setGradeLevel(e.target.value)}
-                disabled={isGenerating}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
-              >
-                {GRADE_LEVELS.map((g) => (
-                  <option key={g} value={g}>
-                    {g}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Special Directives */}
-            <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
-                Custom Teacher Instructions
-              </label>
-              <input
-                type="text"
-                value={specialInstructions}
-                onChange={(e) => setSpecialInstructions(e.target.value)}
-                placeholder="e.g. Focus on real-world examples, vocabulary definitions..."
-                disabled={isGenerating}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
-              />
-            </div>
+          <div className="pt-3 border-t border-slate-200 animate-fadeIn">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+              Custom Directives & Language Constraints (Optional)
+            </label>
+            <input
+              type="text"
+              value={specialInstructions}
+              onChange={(e) => setSpecialInstructions(e.target.value)}
+              placeholder="e.g., Provide all questions and answers in Tamil, include hints, focus on real-world application..."
+              disabled={isGenerating}
+              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all placeholder:text-slate-400"
+            />
           </div>
         )}
       </form>

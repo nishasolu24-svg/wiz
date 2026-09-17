@@ -568,7 +568,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-indigo-50/25 to-pink-50/20 text-slate-800 font-sans selection:bg-fuchsia-200 selection:text-fuchsia-950">
+    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-800 font-sans selection:bg-indigo-100 selection:text-indigo-900">
       {/* Top App Header */}
       <Header
         onOpenGenerator={() => setIsGeneratorOpen(true)}
@@ -720,7 +720,7 @@ export default function App() {
         ) : (
           <div className="space-y-6">
             {/* Active Questionnaire Top Banner with Return to Home */}
-            <div className="no-print bg-white/95 backdrop-blur-md rounded-2xl border border-indigo-200/90 p-3.5 sm:p-4 shadow-sm flex flex-wrap items-center justify-between gap-3">
+            <div className="no-print bg-white rounded-xl border border-slate-200 p-3 shadow-xs flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2 sm:gap-3">
                 <button
                   type="button"
@@ -729,21 +729,21 @@ export default function App() {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
                   id="btn-back-to-home"
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all active:scale-95"
-                  title="Close questionnaire and return to clean homepage"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors"
+                  title="Close questionnaire and return to dashboard"
                 >
-                  <ArrowLeft className="w-4 h-4" />
-                  <span>← Back to Home / My Questionnaires</span>
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <span>Back to Library</span>
                 </button>
 
                 <div className="h-4 w-px bg-slate-200 hidden sm:block" />
 
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-black text-slate-800 line-clamp-1 max-w-[180px] sm:max-w-xs">
+                  <span className="text-xs font-bold text-slate-900 line-clamp-1 max-w-[200px] sm:max-w-md">
                     {currentWorksheet.title}
                   </span>
-                  <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-violet-100 text-violet-800 border border-violet-200 hidden sm:inline-block">
-                    Active Questionnaire
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200 hidden sm:inline-block">
+                    Active
                   </span>
                 </div>
               </div>
@@ -759,10 +759,10 @@ export default function App() {
                     }, 150);
                   }}
                   id="btn-create-new-questionnaire-bar"
-                  className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-xs font-black shadow-xs transition-all active:scale-95"
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-xs transition-colors"
                 >
-                  <Plus className="w-3.5 h-3.5 stroke-[3]" />
-                  <span>+ Create Another</span>
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>New Questionnaire</span>
                 </button>
               </div>
             </div>
@@ -853,25 +853,25 @@ export default function App() {
                   ))}
 
                   {/* Bottom Add Question Buttons */}
-                  <div className="no-print pt-4 flex flex-wrap items-center justify-center gap-3">
+                  <div className="no-print pt-3 flex flex-wrap items-center justify-center gap-3">
                     <button
                       type="button"
                       id="btn-add-custom-question-bottom"
                       onClick={() => setIsCustomQuestionModalOpen(true)}
-                      className="flex items-center gap-2 px-5 py-2.5 rounded-2xl border-2 border-violet-200 bg-gradient-to-r from-violet-600 via-indigo-600 to-pink-600 hover:from-violet-700 hover:to-pink-700 text-white text-xs font-black transition-all shadow-md shadow-indigo-200 active:scale-95"
+                      className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold transition-colors shadow-xs"
                     >
-                      <Plus className="w-4 h-4 stroke-[3]" />
-                      <span>+ Add Custom Question & Choices</span>
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Add Custom Question</span>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => handleAddQuestion(true)}
                       disabled={isAddingQuestion}
-                      className="flex items-center gap-2 px-5 py-2.5 rounded-2xl border-2 border-dashed border-indigo-300 bg-white hover:bg-indigo-50 text-indigo-700 text-xs font-bold transition-all shadow-2xs active:scale-95"
+                      className="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-medium transition-colors shadow-2xs disabled:opacity-50"
                     >
-                      <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-                      <span>{isAddingQuestion ? 'AI Adding Question...' : 'Generate Another with AI'}</span>
+                      <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                      <span>{isAddingQuestion ? 'Generating...' : 'AI Add Question'}</span>
                     </button>
                   </div>
                 </div>

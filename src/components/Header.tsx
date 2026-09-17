@@ -47,19 +47,16 @@ export const Header: React.FC<HeaderProps> = ({
   const broadcastBanner = typeof window !== 'undefined' ? localStorage.getItem('wizsheet_system_broadcast') : null;
 
   return (
-    <nav className="no-print bg-white/90 backdrop-blur-md border-b border-indigo-100/80 flex flex-col justify-between shrink-0 z-30 sticky top-0 shadow-xs">
-      {/* Top Rainbow Accent Stripe */}
-      <div className="h-1.5 w-full bg-gradient-to-r from-pink-500 via-purple-500 via-indigo-500 via-cyan-400 via-emerald-400 to-amber-400" />
-
+    <nav className="no-print bg-white/95 backdrop-blur-md border-b border-slate-200/80 shrink-0 z-30 sticky top-0 shadow-xs">
       {/* Optional Broadcast Announcement Banner */}
       {broadcastBanner && (
-        <div className="bg-gradient-to-r from-amber-500 via-purple-600 to-indigo-600 text-white px-4 py-1.5 text-xs font-bold text-center flex items-center justify-center gap-2 shadow-2xs">
-          <Sparkles className="w-3.5 h-3.5 text-amber-200 fill-amber-200 shrink-0" />
+        <div className="bg-slate-900 text-white px-4 py-1.5 text-xs font-semibold text-center flex items-center justify-center gap-2">
+          <Sparkles className="w-3.5 h-3.5 text-amber-300 fill-amber-300 shrink-0" />
           <span>{broadcastBanner}</span>
         </div>
       )}
       
-      <div className="h-15 flex items-center px-4 sm:px-8 justify-between">
+      <div className="h-16 flex items-center px-4 sm:px-6 lg:px-8 justify-between max-w-7xl mx-auto w-full">
         {/* Brand & Identity */}
         <div className="flex items-center gap-3">
           {onToggleSidebar && (
@@ -78,19 +75,19 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             type="button"
             onClick={onNavigateHome}
-            className="flex items-center gap-3 text-left focus:outline-hidden group"
+            className="flex items-center gap-2.5 text-left focus:outline-hidden group"
             title="Go to Home / My Questionnaires"
           >
-            <div className="w-10 h-10 bg-gradient-to-tr from-violet-600 via-fuchsia-600 to-amber-400 rounded-xl flex items-center justify-center text-white shadow-md shadow-fuchsia-200 shrink-0 transform group-hover:scale-105 transition-transform">
-              <Sparkles className="w-5 h-5" />
+            <div className="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-sm shrink-0 group-hover:bg-indigo-700 transition-colors">
+              <Sparkles className="w-4 h-4 text-amber-300" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-lg sm:text-xl font-extrabold tracking-tight bg-gradient-to-r from-violet-700 via-fuchsia-600 to-indigo-600 bg-clip-text text-transparent group-hover:opacity-90">
-                  WizSheet AI
-                </h1>
-                <span className="hidden lg:inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 text-indigo-700 border border-indigo-200 shadow-2xs">
-                  ✨ Worksheet Studio
+                <span className="text-lg font-bold tracking-tight text-slate-900 group-hover:text-indigo-600 transition-colors">
+                  WizSheet <span className="text-indigo-600">AI</span>
+                </span>
+                <span className="hidden md:inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">
+                  Assessment Studio
                 </span>
               </div>
             </div>
@@ -98,122 +95,116 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Live Platform Counter - Visible ONLY to administrators */}
           {isAdmin && (
-            <div className="flex items-center">
+            <div className="flex items-center ml-2">
               <WebsiteUsageCounter variant="badge" />
             </div>
           )}
         </div>
 
-        {/* Center / Right Status & Action Controls */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          {/* Interactive Tier Status / Free Tier Quota Pill */}
-          {isPaid ? (
-            <button
-              type="button"
-              onClick={onOpenPricing}
-              id="btn-paid-tier-status"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black transition-all shadow-xs border border-amber-300 bg-gradient-to-r from-amber-50 via-violet-50 to-purple-50 text-violet-900 hover:shadow-sm"
-              title="Active Paid Tier - Click to manage subscription"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
-              <span className="hidden md:inline">
-                {tier === 'school' ? 'School Team' : 'Pro Tier'}:
-              </span>
-              <span className="text-amber-700 uppercase tracking-wide">Unlimited</span>
-            </button>
-          ) : onOpenFreeTierSettings ? (
-            <button
-              type="button"
-              onClick={onOpenFreeTierSettings}
-              id="btn-free-tier-status"
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all shadow-2xs border ${
-                hasCustomKey
-                  ? 'bg-amber-50 text-amber-900 border-amber-300 hover:bg-amber-100'
-                  : 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100'
-              }`}
-              title="Click to view daily allowance, cache benefits, or add personal API key"
-            >
-              {hasCustomKey ? (
-                <>
-                  <Key className="w-3.5 h-3.5 text-amber-600" />
-                  <span className="hidden md:inline">Personal Key</span>
-                  <span className="px-1.5 py-0.5 rounded-full bg-amber-200/60 text-[10px] text-amber-900 font-extrabold">
-                    Unlimited
-                  </span>
-                </>
-              ) : (
-                <>
-                  <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                  <Zap className="w-3.5 h-3.5 text-emerald-600" />
-                  <span className="hidden md:inline">Free Tier:</span>
-                  <span>{remainingQuota !== undefined ? `${remainingQuota} left` : '5/5 Daily'}</span>
-                </>
-              )}
-            </button>
-          ) : null}
-
-          {/* Saved Worksheets */}
-          <button
-            onClick={onOpenSaved}
-            id="btn-saved-library"
-            className="flex items-center gap-2 px-3 py-1.5 sm:px-3.5 sm:py-2 bg-gradient-to-r from-indigo-50 to-violet-50 border border-indigo-200 rounded-xl text-xs sm:text-sm font-bold text-indigo-700 hover:from-indigo-100 hover:to-violet-100 transition-all shadow-2xs"
-            title="View saved worksheets"
-          >
-            <Bookmark className="w-4 h-4 text-indigo-600" />
-            <span className="hidden sm:inline">Library</span>
-            {savedCount > 0 && (
-              <span className="px-1.5 py-0.2 rounded-full text-[10px] font-black bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-2xs">
-                {savedCount}
-              </span>
-            )}
-          </button>
-
+        {/* Right Navigation & Action Controls */}
+        <div className="flex items-center gap-2 sm:gap-2.5">
+          {/* Active Worksheet Primary Actions */}
           {hasWorksheet && (
             <>
               <button
                 onClick={onOpenExport}
                 id="btn-export-share"
-                className="hidden sm:flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-cyan-50 to-sky-50 border border-cyan-200 rounded-xl text-xs sm:text-sm font-bold text-cyan-800 shadow-2xs hover:from-cyan-100 hover:to-sky-100 transition-all"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 rounded-xl text-xs font-semibold text-slate-700 transition-all shadow-xs"
                 title="Export or copy worksheet"
               >
-                <Share2 className="w-4 h-4 text-cyan-600" />
+                <Share2 className="w-3.5 h-3.5 text-slate-500" />
                 <span>Export</span>
               </button>
 
               <button
                 onClick={onPrint}
                 id="btn-print-action"
-                className="flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-fuchsia-200 hover:from-violet-700 hover:to-fuchsia-700 transition-all active:scale-98"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold shadow-sm transition-all active:scale-98"
                 title="Print or Save as PDF"
               >
-                <Printer className="w-4 h-4" />
+                <Printer className="w-3.5 h-3.5" />
                 <span>Print / PDF</span>
               </button>
             </>
           )}
 
-          {onOpenBookPdf && (
+          {/* Book / PDF Upload CTA (shown on home) */}
+          {!hasWorksheet && onOpenBookPdf && (
             <button
               type="button"
               onClick={onOpenBookPdf}
               id="btn-header-book-pdf"
-              className="flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl text-xs sm:text-sm font-bold hover:from-violet-700 hover:to-indigo-700 shadow-md shadow-violet-200 transition-all active:scale-98"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 border border-indigo-200/80 hover:bg-indigo-100/70 text-indigo-700 rounded-xl text-xs font-semibold transition-all"
               title="Upload a Book / PDF and generate questions directly from it"
             >
-              <BookOpen className="w-4 h-4 text-amber-300" />
-              <span className="hidden md:inline">Ask from Book</span>
-              <span className="md:hidden">Book PDF</span>
+              <BookOpen className="w-3.5 h-3.5 text-indigo-600" />
+              <span className="hidden sm:inline">Ask from Book / PDF</span>
+              <span className="sm:hidden">Book PDF</span>
             </button>
           )}
 
+          {/* Saved Worksheets Library */}
           <button
-            onClick={onOpenGenerator}
-            id="btn-create-worksheet-modal"
-            className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl text-xs sm:text-sm font-bold hover:from-amber-600 hover:to-orange-600 shadow-md shadow-amber-200 transition-all active:scale-98"
+            onClick={onOpenSaved}
+            id="btn-saved-library"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 rounded-xl text-xs font-semibold text-slate-700 transition-all shadow-xs"
+            title="View saved worksheets"
           >
-            <PlusCircle className="w-4 h-4" />
-            <span>New Prompt</span>
+            <Bookmark className="w-3.5 h-3.5 text-slate-500" />
+            <span className="hidden sm:inline">Library</span>
+            {savedCount > 0 && (
+              <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-indigo-600 text-white">
+                {savedCount}
+              </span>
+            )}
           </button>
+
+          {/* Interactive Tier Status / Free Tier Quota Pill */}
+          {isPaid ? (
+            <button
+              type="button"
+              onClick={onOpenPricing}
+              id="btn-paid-tier-status"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold border border-amber-200 bg-amber-50/70 text-amber-900 hover:bg-amber-100/70 transition-all"
+              title="Active Paid Tier - Click to manage subscription"
+            >
+              <Sparkles className="w-3 h-3 text-amber-600 fill-amber-500" />
+              <span className="hidden md:inline">
+                {tier === 'school' ? 'Team' : 'Pro'}:
+              </span>
+              <span className="font-bold text-amber-800">Unlimited</span>
+            </button>
+          ) : onOpenFreeTierSettings ? (
+            <button
+              type="button"
+              onClick={onOpenFreeTierSettings}
+              id="btn-free-tier-status"
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium border transition-all ${
+                hasCustomKey
+                  ? 'bg-amber-50 text-amber-900 border-amber-200 hover:bg-amber-100/70'
+                  : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+              }`}
+              title="Click to view daily allowance or add personal API key"
+            >
+              {hasCustomKey ? (
+                <>
+                  <Key className="w-3 h-3 text-amber-600" />
+                  <span className="hidden md:inline">Custom Key</span>
+                  <span className="px-1.5 py-0.2 rounded text-[10px] text-amber-800 font-bold bg-amber-100">
+                    Active
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+                  <span className="hidden md:inline text-slate-500">Daily:</span>
+                  <span className="font-semibold text-slate-800">
+                    {remainingQuota !== undefined ? `${remainingQuota} left` : '5/5'}
+                  </span>
+                </>
+              )}
+            </button>
+          ) : null}
 
           {/* User Account & Classification Menu */}
           {onOpenAuth && onOpenPricing && onOpenFreeTierSettings && (

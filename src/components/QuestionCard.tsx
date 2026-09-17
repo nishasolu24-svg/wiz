@@ -131,73 +131,61 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
     switch (type) {
       case 'multiple_choice':
         return (
-          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-2xs">
+          <span className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
             Multiple Choice
           </span>
         );
       case 'true_false':
         return (
-          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-2xs">
+          <span className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
             True / False
           </span>
         );
       case 'fill_blank':
         return (
-          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-2xs">
+          <span className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-amber-50 text-amber-900 border border-amber-200">
             Fill in Blank
           </span>
         );
       case 'short_answer':
         return (
-          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-gradient-to-r from-fuchsia-500 to-pink-500 text-white shadow-2xs">
+          <span className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-indigo-50 text-indigo-800 border border-indigo-200">
             Short Answer
           </span>
         );
       case 'matching':
         return (
-          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-2xs">
+          <span className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-purple-50 text-purple-800 border border-purple-200">
             Matching
           </span>
         );
       case 'math_problem':
         return (
-          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-gradient-to-r from-rose-500 to-red-500 text-white shadow-2xs">
+          <span className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-rose-50 text-rose-800 border border-rose-200">
             Step-by-Step Problem
           </span>
         );
     }
   };
 
-  // Rotating colorful top strip gradients for cards
-  const cardGradients = [
-    'from-pink-500 via-purple-500 to-indigo-500',
-    'from-cyan-400 via-teal-500 to-emerald-500',
-    'from-amber-400 via-orange-500 to-rose-500',
-    'from-violet-500 via-indigo-500 to-cyan-500',
-  ];
-  const cardGradient = cardGradients[index % cardGradients.length];
-
   return (
     <div
-      className={`question-item rounded-2xl border-2 transition-all duration-200 overflow-hidden shadow-xs hover:shadow-md ${
+      className={`question-item rounded-xl border transition-all duration-200 overflow-hidden shadow-xs ${
         showAnswers
-          ? 'bg-white border-emerald-200/80 shadow-emerald-50'
-          : 'bg-white border-slate-200 hover:border-indigo-200'
+          ? 'bg-white border-emerald-200'
+          : 'bg-white border-slate-200 hover:border-slate-300'
       }`}
     >
-      {/* Decorative Rainbow Top Stripe */}
-      <div className={`no-print h-1.5 w-full bg-gradient-to-r ${cardGradient}`} />
-
       {/* Question Header */}
       <div className="p-4 sm:p-5">
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="w-7 h-7 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 text-white text-xs font-black flex items-center justify-center shrink-0 shadow-sm shadow-indigo-200">
+            <span className="w-6 h-6 rounded-md bg-slate-900 text-white text-xs font-bold flex items-center justify-center shrink-0">
               {index + 1}
             </span>
             {getTypeBadge(question.type)}
-            <span className="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
-              {question.points} {question.points === 1 ? 'point' : 'points'}
+            <span className="text-[11px] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
+              {question.points} {question.points === 1 ? 'pt' : 'pts'}
             </span>
           </div>
 
