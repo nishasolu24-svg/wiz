@@ -568,7 +568,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-800 font-sans selection:bg-indigo-100 selection:text-indigo-900">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-50/60 via-indigo-50/20 to-white text-slate-800 font-sans selection:bg-indigo-100 selection:text-indigo-900">
       {/* Top App Header */}
       <Header
         onOpenGenerator={() => setIsGeneratorOpen(true)}
@@ -742,7 +742,7 @@ export default function App() {
                   <span className="text-xs font-bold text-slate-900 line-clamp-1 max-w-[200px] sm:max-w-md">
                     {currentWorksheet.title}
                   </span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200 hidden sm:inline-block">
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200 hidden sm:inline-block">
                     Active
                   </span>
                 </div>

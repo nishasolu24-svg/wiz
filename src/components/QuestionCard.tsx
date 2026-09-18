@@ -180,7 +180,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
       <div className="p-4 sm:p-5">
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="w-6 h-6 rounded-md bg-slate-900 text-white text-xs font-bold flex items-center justify-center shrink-0">
+            <span className="w-6 h-6 rounded-md bg-indigo-600 text-white text-xs font-bold flex items-center justify-center shrink-0 shadow-2xs">
               {index + 1}
             </span>
             {getTypeBadge(question.type)}

@@ -71,7 +71,7 @@ export const UserWorksheetsDashboard: React.FC<UserWorksheetsDashboardProps> = (
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
             <div>
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center shadow-xs">
                   <Bookmark className="w-4 h-4" />
                 </div>
                 <div>
@@ -167,7 +167,7 @@ export const UserWorksheetsDashboard: React.FC<UserWorksheetsDashboardProps> = (
                   <button
                     type="button"
                     onClick={() => onOpenWorksheet(ws)}
-                    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
+                    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
                     title="Open in Worksheet Editor"
                   >
                     <span>Open</span>

@@ -50,7 +50,7 @@ export const Header: React.FC<HeaderProps> = ({
     <nav className="no-print bg-white/95 backdrop-blur-md border-b border-slate-200/80 shrink-0 z-30 sticky top-0 shadow-xs">
       {/* Optional Broadcast Announcement Banner */}
       {broadcastBanner && (
-        <div className="bg-slate-900 text-white px-4 py-1.5 text-xs font-semibold text-center flex items-center justify-center gap-2">
+        <div className="bg-indigo-600 text-white px-4 py-1.5 text-xs font-semibold text-center flex items-center justify-center gap-2 shadow-xs">
           <Sparkles className="w-3.5 h-3.5 text-amber-300 fill-amber-300 shrink-0" />
           <span>{broadcastBanner}</span>
         </div>

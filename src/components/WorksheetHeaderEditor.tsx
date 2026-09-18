@@ -183,7 +183,7 @@ export const WorksheetHeaderEditor: React.FC<WorksheetHeaderEditorProps> = ({
           </span>
         )}
         {worksheet.versionLabel && (
-          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-slate-900 text-white shadow-2xs">
+          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-600 text-white shadow-2xs">
             {worksheet.versionLabel}
           </span>
         )}

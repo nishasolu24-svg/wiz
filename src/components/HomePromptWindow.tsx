@@ -282,19 +282,19 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
   return (
     <div className="no-print bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all">
       {/* Top Banner / Prompt Window Header */}
-      <div className="bg-slate-900 px-5 sm:px-6 py-3.5 text-white flex flex-wrap items-center justify-between gap-3">
+      <div className="bg-gradient-to-r from-indigo-50 via-sky-50/50 to-white px-5 sm:px-6 py-3.5 border-b border-indigo-100 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 border border-indigo-400/30">
+          <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs">
             <Sparkles className="w-4 h-4 text-amber-300" />
           </div>
           <div>
-            <h2 className="text-sm sm:text-base font-bold text-white tracking-tight flex items-center gap-2">
+            <h2 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight flex items-center gap-2">
               <span>Assessment & Quiz Generator</span>
-              <span className="hidden sm:inline-flex px-2 py-0.5 rounded text-[10px] font-medium bg-slate-800 text-slate-300 border border-slate-700">
+              <span className="hidden sm:inline-flex px-2 py-0.5 rounded-md text-[10px] font-semibold bg-indigo-100 text-indigo-700 border border-indigo-200">
                 Gemini AI
               </span>
             </h2>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500">
               Customize subject, difficulty, and question format to create assessments
             </p>
           </div>
@@ -313,10 +313,10 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
                 onOpenBookPdfModal();
               }}
               id="btn-home-open-book-modal"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-slate-50 text-indigo-700 border border-indigo-200 shadow-2xs transition-all cursor-pointer"
               title="Upload any Book or PDF to ask questions grounded directly in the text"
             >
-              <BookOpen className="w-3.5 h-3.5 text-indigo-400" />
+              <BookOpen className="w-3.5 h-3.5 text-indigo-600" />
               <span>Ask from Book / PDF</span>
             </button>
           )}
@@ -333,7 +333,7 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
                 onTakeTestOnline();
               }}
               id="btn-home-take-test-online"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-all cursor-pointer"
               title="Launch interactive online test mode"
             >
               <Play className="w-3 h-3 fill-current" />
@@ -346,9 +346,9 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
             type="button"
             onClick={() => setShowOptions(!showOptions)}
             id="btn-toggle-advanced-settings"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-white border border-slate-200 bg-white shadow-2xs transition-all"
           >
-            <SlidersHorizontal className="w-3.5 h-3.5" />
+            <SlidersHorizontal className="w-3.5 h-3.5 text-slate-500" />
             <span className="hidden sm:inline">{showOptions ? 'Hide Directives' : 'Custom Directives'}</span>
             {showOptions ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
           </button>
