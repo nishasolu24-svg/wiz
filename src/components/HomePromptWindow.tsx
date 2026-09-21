@@ -36,7 +36,7 @@ interface HomePromptWindowProps {
   currentTopic?: string;
   onTakeTestOnline?: () => void;
   onOpenCustomQuestion?: () => void;
-  onOpenBookPdfModal?: () => void;
+  onOpenBookPdfModal?: (mode?: 'question_paper' | 'book') => void;
   hasCurrentWorksheet?: boolean;
   isLoggedIn?: boolean;
   onOpenAuth?: (mode?: 'signin' | 'register') => void;
@@ -300,7 +300,27 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Upload Question Paper PDF -> Generate Similar Exam CTA */}
+          {onOpenBookPdfModal && (
+            <button
+              type="button"
+              onClick={() => {
+                if (!userIsLoggedIn) {
+                  onOpenAuth?.('signin');
+                  return;
+                }
+                onOpenBookPdfModal('question_paper');
+              }}
+              id="btn-home-open-question-paper-modal"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white shadow-xs transition-all cursor-pointer"
+              title="Upload an existing Question Paper PDF to generate a similar exam with different questions and answers"
+            >
+              <FileQuestion className="w-3.5 h-3.5 text-amber-300" />
+              <span>Similar Exam from PDF (Set B)</span>
+            </button>
+          )}
+
           {/* Ask from Book / PDF CTA */}
           {onOpenBookPdfModal && (
             <button
@@ -310,14 +330,14 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
                   onOpenAuth?.('signin');
                   return;
                 }
-                onOpenBookPdfModal();
+                onOpenBookPdfModal('book');
               }}
               id="btn-home-open-book-modal"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-slate-50 text-indigo-700 border border-indigo-200 shadow-2xs transition-all cursor-pointer"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-slate-50 text-indigo-700 border border-indigo-200 shadow-2xs transition-all cursor-pointer"
               title="Upload any Book or PDF to ask questions grounded directly in the text"
             >
               <BookOpen className="w-3.5 h-3.5 text-indigo-600" />
-              <span>Ask from Book / PDF</span>
+              <span>Ask from Book</span>
             </button>
           )}
 
@@ -346,7 +366,7 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
             type="button"
             onClick={() => setShowOptions(!showOptions)}
             id="btn-toggle-advanced-settings"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-white border border-slate-200 bg-white shadow-2xs transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-white border border-slate-200 bg-white shadow-2xs transition-all cursor-pointer"
           >
             <SlidersHorizontal className="w-3.5 h-3.5 text-slate-500" />
             <span className="hidden sm:inline">{showOptions ? 'Hide Directives' : 'Custom Directives'}</span>
@@ -452,6 +472,22 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
             <Lightbulb className="w-3.5 h-3.5 text-amber-500" />
             <span>Popular:</span>
           </span>
+          {onOpenBookPdfModal && (
+            <button
+              type="button"
+              onClick={() => {
+                if (!userIsLoggedIn) {
+                  onOpenAuth?.('signin');
+                  return;
+                }
+                onOpenBookPdfModal('question_paper');
+              }}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-gradient-to-r from-violet-50 to-indigo-50 hover:from-violet-100 hover:to-indigo-100 text-indigo-900 border border-indigo-200 transition-colors cursor-pointer shadow-2xs"
+            >
+              <Sparkles className="w-3 h-3 text-indigo-600" />
+              <span>📄 Upload Question Paper PDF (Set B)</span>
+            </button>
+          )}
           {QUICK_TOPICS.map((item, idx) => (
             <button
               key={idx}

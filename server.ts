@@ -1183,6 +1183,13 @@ async function startServer() {
         charCount: (p.text || '').length,
       }));
 
+      // Heuristic detection for question paper structure
+      const questionPattern = /(?:(?:question|q\.?|que\.?)\s*\d+|(?:^|\n)\s*\d+[\.\)]\s+[A-Z])/gi;
+      const questionMatches = rawText.match(questionPattern) || [];
+      const hasExamKeywords = /(?:question\s*paper|examination|midterm|final\s*exam|total\s*marks|maximum\s*marks|time\s*allowed|section\s*[a-d]|instructions?\s*:|answer\s*all|choose\s*the\s*correct)/i.test(rawText);
+      const isLikelyQuestionPaper = (questionMatches.length >= 3) || (hasExamKeywords && questionMatches.length >= 1) || /(?:test\s*paper|quiz|assessment\s*paper|exam)/i.test(fileName);
+      const detectedQuestionCount = Math.max(questionMatches.length, isLikelyQuestionPaper ? 5 : 0);
+
       res.json({
         success: true,
         fileName,
@@ -1194,6 +1201,8 @@ async function startServer() {
         fullText: rawText,
         suggestedTitle,
         detectedChapters,
+        isLikelyQuestionPaper,
+        detectedQuestionCount,
         pages: pagesSummary,
       });
     } catch (err: any) {
@@ -1319,7 +1328,48 @@ async function startServer() {
         questionFormatRule = 'CRITICAL REQUIREMENT: Generate a balanced mix of "multiple_choice" and "fill_blank" questions. Ensure multiple choice questions have 4 options and fill-in-the-blank questions have a blank represented by ________ with wordBank terms.';
       }
 
-      const bookPromptSection = bookData ? `
+      const isQuestionPaperMode = Boolean(
+        req.body.isQuestionPaperMode ||
+        bookData?.documentType === 'question_paper' ||
+        bookData?.variationStyle ||
+        req.body.questionPaperVariationStyle
+      );
+      const variationStyle = bookData?.variationStyle || req.body.questionPaperVariationStyle || 'parallel_twin';
+
+      let documentPromptSection = '';
+      if (isQuestionPaperMode) {
+        documentPromptSection = `
+ORIGINAL SPECIMEN QUESTION PAPER (UPLOADED PDF/DOCUMENT):
+Original Document: "${bookData?.bookTitle || bookData?.fileName || effectiveTopic}"
+Target Subject: ${subject}
+Target Grade Level: ${gradeLevel}
+Assessment Category: ${category}
+Requested Variation Mode: ${variationStyle}
+
+EXTRACTED TEXT & QUESTIONS FROM THE ORIGINAL QUESTION PAPER:
+"""
+${(bookData?.bookExcerpt || sourceText || '').slice(0, 42000)}
+"""
+
+CRITICAL MANDATE - GENERATE A SIMILAR QUESTION PAPER WITH COMPLETELY NEW & DIFFERENT QUESTIONS AND ANSWERS:
+The teacher provided this original question paper to generate a fresh, parallel assessment (Set B / Twin Examination):
+1. ZERO DUPLICATION OF QUESTIONS:
+   - You MUST NOT repeat any of the original questions verbatim.
+   - Formulate COMPLETELY NEW questions that test the same curriculum concepts, syllabus objectives, and cognitive skills at the identical grade level.
+2. SYSTEMATIC PARALLEL MAPPING:
+   - For numerical & mathematics problems: keep the formula/method identical, but substitute with fresh numerical values, scenarios, and labels.
+   - For science questions: test corresponding or complementary structures, mechanisms, equations, or processes.
+   - For language & reading: test the identical grammatical rules, literary devices, or comprehension skills with fresh context.
+   - For multiple-choice questions: create 4 fresh, plausible options with only one unambiguously correct answer and realistic distractors.
+3. ACCURATE NEW ANSWERS & PEDAGOGICAL PROOF:
+   - Provide the exact correctAnswer for each new question.
+   - In explanation, provide the complete, step-by-step mathematical derivation, textual rationale, or conceptual proof.
+4. TITLE & VERSION:
+   - Title: "${bookData?.bookTitle || effectiveTopic} • Parallel Assessment (Set B)"
+   - Subtitle: "${gradeLevel} ${subject} • Alternate Questions & Verified Solutions"
+`;
+      } else if (bookData) {
+        documentPromptSection = `
 PRIMARY SOURCE MATERIAL - UPLOADED BOOK / TEXTBOOK / PDF:
 Book Title: "${bookData.bookTitle || bookData.fileName}"
 ${bookData.chapterOrSection ? `Selected Chapter / Section: ${bookData.chapterOrSection}` : ''}
@@ -1337,7 +1387,8 @@ STRICT MANDATE FOR BOOK-GROUNDED QUESTIONS:
 3. In each question's "explanation", explicitly cite or reference how the correct answer is directly supported by the book excerpt.
 4. For fill-in-the-blank questions, ensure the missing words are pivotal vocabulary or concepts from the book and included in the wordBank.
 5. Create a title reflecting the book, e.g. "${bookData.bookTitle || 'Book'} Reading & Analysis".
-` : '';
+`;
+      }
 
       const detectedLang = detectTargetLanguage(effectiveTopic, specialInstructions, subject);
 
@@ -1365,7 +1416,7 @@ COMPLEXITY / RIGOR: ${normalizedDifficulty} (Beginner = accessible definitions a
 NUMBER OF QUESTIONS: ${questionCount}
 ${questionFormatRule}
 ${languageMandateSection}
-${bookPromptSection}
+${documentPromptSection}
 ${!bookData && sourceText ? `REFERENCE SOURCE TEXT TO BASE QUESTIONS ON:\n"""\n${sourceText}\n"""\n` : ''}
 ${specialInstructions ? `SPECIFIC TEACHER INSTRUCTIONS: ${specialInstructions}` : ''}
 ${standardsAlignment ? `STANDARDS TO ALIGN WITH: ${standardsAlignment}` : ''}
@@ -1495,8 +1546,8 @@ REQUIREMENTS:
 
       const fullWorksheet = {
         id: `ws-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-        title: parsed.title || effectiveTopic,
-        subtitle: parsed.subtitle || `${gradeLevel} ${subject} Assessment`,
+        title: parsed.title || (isQuestionPaperMode ? `${effectiveTopic} • Parallel Assessment (Set B)` : effectiveTopic),
+        subtitle: parsed.subtitle || (isQuestionPaperMode ? `${gradeLevel} ${subject} • Alternate Questions & Verified Answers` : `${gradeLevel} ${subject} Assessment`),
         subject: parsed.subject || subject,
         gradeLevel: parsed.gradeLevel || gradeLevel,
         category,
@@ -1508,12 +1559,18 @@ REQUIREMENTS:
         standardCode: parsed.standardCode || standardsAlignment || undefined,
         wordBank: parsed.wordBank && parsed.wordBank.length > 0 ? parsed.wordBank : undefined,
         totalPoints: calculatedTotal || questionCount * 2,
-        versionLabel: 'Version A',
-        sourceBook: bookData ? {
+        versionLabel: isQuestionPaperMode ? 'Set B (Alternate Questions)' : 'Version A',
+        sourceBook: (!isQuestionPaperMode && bookData) ? {
           title: bookData.bookTitle || bookData.fileName,
           fileName: bookData.fileName,
           pageCount: bookData.pageCount,
           chapterOrPages: bookData.chapterOrSection || bookData.selectedPages || 'Full Book',
+        } : undefined,
+        sourceQuestionPaper: isQuestionPaperMode ? {
+          originalTitle: bookData?.bookTitle || bookData?.fileName || effectiveTopic,
+          fileName: bookData?.fileName,
+          variationStyle,
+          isSimilarVariant: true,
         } : undefined,
         createdAt: new Date().toISOString(),
         questions: enrichedQuestions.map((q: any, idx: number) => ({

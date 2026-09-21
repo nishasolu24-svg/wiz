@@ -111,6 +111,16 @@ export const WorksheetPrintView: React.FC<WorksheetPrintViewProps> = ({
           </div>
         )}
 
+        {/* Source Question Paper Citation if present */}
+        {worksheet.sourceQuestionPaper && (
+          <div className="mt-3 px-3 py-1.5 bg-slate-100/80 border border-slate-300 rounded text-[11px] text-slate-700 flex items-center justify-between">
+            <div>
+              <span className="font-bold">Parallel Assessment (Set B):</span> Alternate questions derived from {worksheet.sourceQuestionPaper.originalTitle}
+            </div>
+            <span className="text-[10px] font-mono text-slate-800 uppercase font-bold">Set B • Verified Q&A</span>
+          </div>
+        )}
+
         {/* Reading Passage if included */}
         {worksheet.passage && (
           <div className="mt-4 p-4 bg-slate-50 border border-slate-300 rounded-sm">

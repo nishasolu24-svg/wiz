@@ -1,12 +1,12 @@
 import React from 'react';
-import { Sparkles, Printer, Bookmark, PlusCircle, Share2, HelpCircle, Lightbulb, Zap, Key, BookOpen } from 'lucide-react';
+import { Sparkles, Printer, Bookmark, PlusCircle, Share2, HelpCircle, Lightbulb, Zap, Key, BookOpen, FileText } from 'lucide-react';
 import { UserMenu } from './UserMenu';
 import { authService } from '../services/authService';
 import { WebsiteUsageCounter } from './WebsiteUsageCounter';
 
 interface HeaderProps {
   onOpenGenerator: () => void;
-  onOpenBookPdf?: () => void;
+  onOpenBookPdf?: (mode?: 'question_paper' | 'book') => void;
   onOpenSaved: () => void;
   onPrint: () => void;
   onOpenExport: () => void;
@@ -128,19 +128,32 @@ export const Header: React.FC<HeaderProps> = ({
             </>
           )}
 
-          {/* Book / PDF Upload CTA (shown on home) */}
+          {/* Question Paper & Book PDF CTAs (shown on home) */}
           {!hasWorksheet && onOpenBookPdf && (
-            <button
-              type="button"
-              onClick={onOpenBookPdf}
-              id="btn-header-book-pdf"
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 border border-indigo-200/80 hover:bg-indigo-100/70 text-indigo-700 rounded-xl text-xs font-semibold transition-all"
-              title="Upload a Book / PDF and generate questions directly from it"
-            >
-              <BookOpen className="w-3.5 h-3.5 text-indigo-600" />
-              <span className="hidden sm:inline">Ask from Book / PDF</span>
-              <span className="sm:hidden">Book PDF</span>
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={() => onOpenBookPdf('question_paper')}
+                id="btn-header-question-paper-pdf"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold shadow-xs transition-all cursor-pointer"
+                title="Upload Question Paper PDF to generate similar paper with different questions & answers"
+              >
+                <FileText className="w-3.5 h-3.5 text-amber-300" />
+                <span className="hidden md:inline">Upload Exam PDF (Set B)</span>
+                <span className="md:hidden">Exam PDF</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => onOpenBookPdf('book')}
+                id="btn-header-book-pdf"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 border border-indigo-200/80 hover:bg-indigo-100/70 text-indigo-700 rounded-xl text-xs font-semibold transition-all cursor-pointer"
+                title="Upload a Book / Reader PDF and generate questions directly from it"
+              >
+                <BookOpen className="w-3.5 h-3.5 text-indigo-600" />
+                <span>Ask from Book</span>
+              </button>
+            </>
           )}
 
           {/* Saved Worksheets Library */}

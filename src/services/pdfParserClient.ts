@@ -14,6 +14,8 @@ export interface ExtractedPdfData {
   previewSnippet: string;
   fullText: string;
   suggestedTitle: string;
+  isLikelyQuestionPaper?: boolean;
+  detectedQuestionCount?: number;
   detectedChapters: Array<{
     title: string;
     startPage: number;
@@ -72,6 +74,13 @@ export async function parsePdfInBrowser(file: File): Promise<ExtractedPdfData> {
     }
   });
 
+  // Question paper detection heuristics
+  const questionPattern = /(?:(?:question|q\.?|que\.?)\s*\d+|(?:^|\n)\s*\d+[\.\)]\s+[A-Z])/gi;
+  const questionMatches = fullText.match(questionPattern) || [];
+  const hasExamKeywords = /(?:question\s*paper|examination|midterm|final\s*exam|total\s*marks|maximum\s*marks|time\s*allowed|section\s*[a-d]|instructions?\s*:|answer\s*all|choose\s*the\s*correct)/i.test(fullText);
+  const isLikelyQuestionPaper = (questionMatches.length >= 3) || (hasExamKeywords && questionMatches.length >= 1) || /(?:test\s*paper|quiz|assessment\s*paper|exam)/i.test(file.name);
+  const detectedQuestionCount = Math.max(questionMatches.length, isLikelyQuestionPaper ? 5 : 0);
+
   return {
     fileName: file.name,
     fileSize: file.size,
@@ -81,6 +90,8 @@ export async function parsePdfInBrowser(file: File): Promise<ExtractedPdfData> {
     previewSnippet,
     fullText,
     suggestedTitle,
+    isLikelyQuestionPaper,
+    detectedQuestionCount: detectedQuestionCount > 0 ? detectedQuestionCount : undefined,
     detectedChapters,
   };
 }

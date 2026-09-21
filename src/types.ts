@@ -60,6 +60,14 @@ export interface FreeImageResult {
   category: string;
 }
 
+export type DocumentUploadType = 'book_reading' | 'question_paper';
+export type QuestionPaperVariationStyle =
+  | 'parallel_twin'
+  | 'practice_mock'
+  | 'set_b_retest'
+  | 'challenging_variant'
+  | 'scaffolded_retest';
+
 export interface UploadedBookInfo {
   fileName: string;
   fileSize?: number;
@@ -71,6 +79,9 @@ export interface UploadedBookInfo {
   suggestedTitle?: string;
   detectedChapters?: { id: string; title: string; pageNumber: number }[];
   selectedPageRange?: string; // e.g. "All", "1-5", "Chapter 3"
+  documentType?: DocumentUploadType;
+  isLikelyQuestionPaper?: boolean;
+  detectedQuestionCount?: number;
 }
 
 export interface WorksheetMetadata {
@@ -97,6 +108,12 @@ export interface WorksheetMetadata {
     pageCount?: number;
     chapterOrPages?: string;
   };
+  sourceQuestionPaper?: {
+    originalTitle: string;
+    fileName?: string;
+    variationStyle?: string;
+    isSimilarVariant?: boolean;
+  };
 }
 
 export interface Worksheet extends WorksheetMetadata {
@@ -120,6 +137,8 @@ export interface WorksheetGenerationRequest {
   schoolName?: string;
   teacherName?: string;
   includeImages?: boolean; // When true or when prompt requests diagrams/identification, include free educational diagrams
+  isQuestionPaperMode?: boolean;
+  questionPaperVariationStyle?: QuestionPaperVariationStyle;
   bookData?: {
     fileName: string;
     bookTitle?: string;
@@ -127,6 +146,8 @@ export interface WorksheetGenerationRequest {
     chapterOrSection?: string;
     selectedPages?: string;
     bookExcerpt?: string;
+    documentType?: DocumentUploadType;
+    variationStyle?: QuestionPaperVariationStyle;
   };
 }
 

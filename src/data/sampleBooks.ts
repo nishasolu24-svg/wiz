@@ -12,6 +12,190 @@ export interface SampleBook {
   chapters: { id: string; title: string; pageNumber: number }[];
 }
 
+export interface SampleQuestionPaper {
+  id: string;
+  title: string;
+  subject: string;
+  gradeLevel: string;
+  pageCount: number;
+  questionCount: number;
+  totalMarks: number;
+  preview: string;
+  fullText: string;
+  topicsCovered: string[];
+}
+
+export const SAMPLE_QUESTION_PAPERS: SampleQuestionPaper[] = [
+  {
+    id: 'grade-8-science-midterm',
+    title: 'Grade 8 Physical Science Midterm Examination (Sample Paper)',
+    subject: 'Science',
+    gradeLevel: 'Grade 8 (Middle School)',
+    pageCount: 3,
+    questionCount: 8,
+    totalMarks: 20,
+    preview: 'SECTION A: Multiple Choice Questions (Newton\'s Laws, Chemical vs Physical Changes, Wave Energy)...',
+    topicsCovered: ['Newton\'s Laws of Motion', 'Chemical vs Physical Changes', 'Kinetic & Potential Energy', 'Sound Waves'],
+    fullText: `SUNNYDALE ACADEMY — MIDTERM ASSESSMENT
+SUBJECT: GRADE 8 PHYSICAL SCIENCE
+TIME ALLOWED: 45 MINUTES | MAXIMUM MARKS: 20
+
+INSTRUCTIONS:
+- Answer all questions carefully.
+- Section A contains Multiple Choice Questions (1 mark each).
+- Section B contains Fill-in-the-Blank and Problem-Solving items (2 marks each).
+
+SECTION A: MULTIPLE CHOICE QUESTIONS (1 mark each)
+1. A hockey puck slides across an icy surface with negligible friction. According to Newton's First Law of Motion, the puck will:
+   A) Gradually accelerate forward on its own
+   B) Continue moving at constant velocity in a straight line
+   C) Abruptly stop once the initial contact force ends
+   D) Turn in a circular trajectory due to inertia
+   [Correct Answer: B]
+
+2. Which of the following observations provides conclusive evidence of a chemical change rather than a physical change?
+   A) Liquid water boils to form steam vapor
+   B) Sodium chloride crystals dissolve into pure water
+   C) A solid zinc strip placed in hydrochloric acid produces bubbles of hydrogen gas
+   D) A block of wax melts upon heating on a hot plate
+   [Correct Answer: C]
+
+3. A 2.0 kg toy car is propelled by a constant net force of 6.0 Newtons. What is the acceleration of the car?
+   A) 3.0 m/s²
+   B) 12.0 m/s²
+   C) 0.33 m/s²
+   D) 8.0 m/s²
+   [Correct Answer: A — Formula: a = F / m = 6.0 N / 2.0 kg = 3.0 m/s²]
+
+4. As a roller coaster car ascends from the track base to the top of the highest peak, what transformation of mechanical energy takes place?
+   A) Gravitational potential energy is transformed entirely into thermal energy
+   B) Kinetic energy is transformed into gravitational potential energy
+   C) Potential energy is converted directly into nuclear energy
+   D) Total mechanical energy increases exponentially
+   [Correct Answer: B]
+
+SECTION B: STRUCTURED QUESTIONS & COMPLETION (2 marks each)
+5. Fill in the blank: The rate at which an object changes its position over time in a specified directional vector is called ________.
+   [Answer: velocity]
+
+6. A sound wave traveling through air has a frequency of 250 Hz. Sound travels faster in solid steel than in ambient air because steel particles are more densely packed and have higher ________.
+   [Answer: elasticity / density]
+
+7. When magnesium ribbon is burned in oxygen, white magnesium oxide powder is formed. The chemical equation for this synthesis reaction is 2Mg + O₂ → ________.
+   [Answer: 2MgO]
+
+8. An electric circuit contains a 9-volt battery connected to a 3-ohm resistor. Using Ohm's Law (I = V / R), the current flowing through the circuit is ________ amperes.
+   [Answer: 3]`,
+  },
+  {
+    id: 'grade-6-math-unit-test',
+    title: 'Grade 6 Mathematics Unit Assessment Paper (Sample)',
+    subject: 'Mathematics',
+    gradeLevel: 'Grade 6 (Middle School)',
+    pageCount: 2,
+    questionCount: 7,
+    totalMarks: 18,
+    preview: 'SECTION 1: Fractions, Decimals, Perimeter & Ratio Problems...',
+    topicsCovered: ['Equivalent Fractions', 'Ratios & Proportions', 'Area of Rectangles', 'Unit Rates', 'Algebraic Expressions'],
+    fullText: `PINEWOOD MIDDLE SCHOOL — MATHEMATICS UNIT TEST
+GRADE 6 • RATIOS, FRACTIONS & MEASUREMENT
+TOTAL MARKS: 18 | TIME: 40 MINUTES
+
+1. Which pair of ratios are equivalent?
+   A) 2:3 and 4:9
+   B) 3:5 and 9:15
+   C) 4:7 and 8:12
+   D) 5:8 and 15:20
+   [Correct: B]
+
+2. A bakery uses 3 cups of flour for every 2 cups of sugar to make a batch of cookies. If the baker uses 12 cups of flour, how many cups of sugar are required?
+   A) 6 cups
+   B) 8 cups
+   C) 9 cups
+   D) 10 cups
+   [Correct: B — 12 / 3 = 4 batches; 4 * 2 = 8 cups]
+
+3. A rectangular community garden has a length of 8.5 meters and a width of 4.0 meters. What is the total area of the garden in square meters?
+   A) 34.0 sq meters
+   B) 25.0 sq meters
+   C) 17.0 sq meters
+   D) 32.5 sq meters
+   [Correct: A — Area = 8.5 * 4.0 = 34.0]
+
+4. Simplify the fraction 18/24 to its lowest irreducible form:
+   A) 3/4
+   B) 2/3
+   C) 9/12
+   D) 6/8
+   [Correct: A]
+
+5. Fill in the blank: A cyclist rides 24 miles in 2 hours at a steady pace. The cyclist's unit rate of speed is ________ miles per hour.
+   [Answer: 12]
+
+6. Fill in the blank: In the algebraic expression 5x + 7, the number 5 is known as the ________ of the variable x.
+   [Answer: coefficient]
+
+7. A store offers a 20% discount on a backpack originally priced at $35.00. The dollar amount saved by the discount is $________.
+   [Answer: 7 or 7.00]`,
+  },
+  {
+    id: 'grade-10-biology-exam',
+    title: 'Grade 10 Biology Cellular Processes & Genetics Test Paper',
+    subject: 'Science',
+    gradeLevel: 'Grade 9 - 10 (High School)',
+    pageCount: 3,
+    questionCount: 8,
+    totalMarks: 24,
+    preview: 'CELL BIOLOGY & MOLECULAR GENETICS — Mitosis, Cellular Respiration, DNA Replication...',
+    topicsCovered: ['Cellular Respiration', 'Mitosis vs Meiosis', 'DNA Structure', 'Mendelian Monohybrid Cross'],
+    fullText: `OAKRIDGE HIGH SCHOOL • DEPARTMENT OF BIOLOGY
+EXAMINATION PAPER: CELL BIOLOGY, ENERGETICS & GENETICS
+GRADE 10 HONORS • DURATION: 50 MINUTES
+
+SECTION 1: MULTIPLE CHOICE (2 marks each)
+1. Which metabolic stage of aerobic cellular respiration takes place along the inner mitochondrial cristae and generates the largest quantity of ATP?
+   A) Glycolysis in the cytosol
+   B) The Citric Acid (Krebs) cycle
+   C) Oxidative phosphorylation via the electron transport chain
+   D) Lactic acid fermentation
+   [Correct: C]
+
+2. During which phase of mitosis do sister chromatids detach at the centromere and migrate toward opposite poles of the mitotic spindle?
+   A) Prophase
+   B) Metaphase
+   C) Anaphase
+   D) Telophase
+   [Correct: C]
+
+3. In pea plants, the allele for purple flowers (P) is completely dominant over white flowers (p). If two heterozygous plants (Pp × Pp) are crossed, what is the expected phenotypic ratio of purple to white offspring?
+   A) 1 purple : 1 white
+   B) 3 purple : 1 white
+   C) 4 purple : 0 white
+   D) 2 purple : 2 white
+   [Correct: B]
+
+4. Which enzyme is primarily responsible for unzipping and separating the double-stranded DNA helix during replication?
+   A) DNA ligase
+   B) DNA helicase
+   C) RNA polymerase
+   D) Amylase
+   [Correct: B]
+
+SECTION 2: FILL IN THE BLANK & SHORT ANSWER (2 marks each)
+5. Cellular respiration produces carbon dioxide, water, and usable chemical energy stored primarily in molecules of ________.
+   [Answer: ATP / adenosine triphosphate]
+
+6. Plant cell walls are primarily composed of a tough, fibrous polysaccharide known as ________.
+   [Answer: cellulose]
+
+7. In human somatic cells, the diploid chromosome count is 46, whereas mature gametes (sperm and egg) contain a haploid count of ________ chromosomes.
+   [Answer: 23]
+
+8. The semi-fluid matrix that surrounds the thylakoid membranes inside a chloroplast, where the Calvin cycle occurs, is called the ________.
+   [Answer: stroma]`,
+  },
+];
+
 export const SAMPLE_BOOKS: SampleBook[] = [
   {
     id: 'little-prince',

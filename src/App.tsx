@@ -62,6 +62,7 @@ export default function App() {
   // Modals state
   const [isGeneratorOpen, setIsGeneratorOpen] = useState(false);
   const [isBookPdfModalOpen, setIsBookPdfModalOpen] = useState(false);
+  const [bookPdfModalMode, setBookPdfModalMode] = useState<'question_paper' | 'book'>('question_paper');
   const [isSavedOpen, setIsSavedOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [isCustomQuestionModalOpen, setIsCustomQuestionModalOpen] = useState(false);
@@ -576,7 +577,10 @@ export default function App() {
         onPrint={() => handlePrint(viewMode === 'answer_key' ? 'answer_key' : 'student')}
         onOpenExport={() => setIsExportOpen(true)}
         onOpenFreeTierSettings={() => setIsFreeTierOpen(true)}
-        onOpenBookPdf={() => setIsBookPdfModalOpen(true)}
+        onOpenBookPdf={(mode = 'question_paper') => {
+          setBookPdfModalMode(mode);
+          setIsBookPdfModalOpen(true);
+        }}
         onOpenAuth={(mode) => {
           setAuthModalMode(mode || 'signin');
           setIsAuthModalOpen(true);
@@ -637,12 +641,13 @@ export default function App() {
             }
             setIsCustomQuestionModalOpen(true);
           }}
-          onOpenBookPdfModal={() => {
+          onOpenBookPdfModal={(mode = 'question_paper') => {
             if (!teacherProfile.isLoggedIn && !authService.isSignedIn()) {
               setAuthModalMode('signin');
               setIsAuthModalOpen(true);
               return;
             }
+            setBookPdfModalMode(mode);
             setIsBookPdfModalOpen(true);
           }}
           hasCurrentWorksheet={Boolean(currentWorksheet)}
@@ -897,13 +902,15 @@ export default function App() {
         error={generationError}
         onOpenBookPdfModal={() => {
           setIsGeneratorOpen(false);
+          setBookPdfModalMode('question_paper');
           setIsBookPdfModalOpen(true);
         }}
       />
 
-      {/* Upload Book PDF & Ask Questions Modal */}
+      {/* Upload Question Paper / Book PDF Modal */}
       <BookPdfUploadModal
         isOpen={isBookPdfModalOpen}
+        initialMode={bookPdfModalMode}
         onClose={() => setIsBookPdfModalOpen(false)}
         onGenerate={handleGenerate}
         isGenerating={isGenerating}

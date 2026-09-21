@@ -1664,6 +1664,13 @@ Difficulty: ${request.difficulty}
 Question Count: ${request.questionCount}
 Question Format: ${request.questionFormat}
 ${request.specialInstructions ? `Special Instructions / Target Language: ${request.specialInstructions}` : ''}
+${(request.isQuestionPaperMode || request.bookData?.documentType === 'question_paper') ? `
+CRITICAL QUESTION PAPER VARIATION MANDATE:
+The user uploaded an original question paper. You MUST generate a SIMILAR QUESTION PAPER WITH DIFFERENT QUESTIONS AND ANSWERS.
+- Do NOT repeat the exact questions from the original paper.
+- Generate newly formulated parallel questions testing the same curriculum concepts, topics, and problem styles with altered numbers and contexts.
+- Provide the verified correctAnswer and explanation for each new question.
+` : ''}
 
 CRITICAL LANGUAGE RULE:
 If the topic, subject, or instructions mention Tamil (e.g. Thirukkural, தமிழ், திருக்குறள், or questions/answers in Tamil), ALL questions, multiple-choice options, answers, hints, and explanations MUST BE ENTIRELY WRITTEN IN AUTHENTIC TAMIL SCRIPT (தமிழ்).
@@ -1729,10 +1736,14 @@ Return ONLY a valid JSON object matching this exact schema:
     hint: q.hint,
   }));
 
+  const isQuestionPaper = Boolean(
+    request.isQuestionPaperMode || request.bookData?.documentType === 'question_paper'
+  );
+
   return {
     id: `ws-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-    title: parsed.title || request.topic,
-    subtitle: parsed.subtitle || `${request.gradeLevel} ${request.subject}`,
+    title: parsed.title || (isQuestionPaper ? `${request.topic} • Parallel Assessment (Set B)` : request.topic),
+    subtitle: parsed.subtitle || (isQuestionPaper ? `${request.gradeLevel} ${request.subject} • Alternate Questions & Verified Answers` : `${request.gradeLevel} ${request.subject}`),
     subject: parsed.subject || request.subject,
     gradeLevel: request.gradeLevel,
     category: request.category,
@@ -1742,7 +1753,13 @@ Return ONLY a valid JSON object matching this exact schema:
     instructions: parsed.instructions || 'Read each question carefully.',
     wordBank: parsed.wordBank || undefined,
     totalPoints: questions.reduce((sum, q) => sum + (q.points || 2), 0),
-    versionLabel: 'Version A',
+    versionLabel: isQuestionPaper ? 'Set B (Alternate Questions)' : 'Version A',
+    sourceQuestionPaper: isQuestionPaper ? {
+      originalTitle: request.bookData?.bookTitle || request.topic,
+      fileName: request.bookData?.fileName,
+      variationStyle: request.questionPaperVariationStyle || request.bookData?.variationStyle || 'parallel_twin',
+      isSimilarVariant: true,
+    } : undefined,
     createdAt: new Date().toISOString(),
     questions,
   };

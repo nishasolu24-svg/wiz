@@ -226,6 +226,26 @@ export const WorksheetHeaderEditor: React.FC<WorksheetHeaderEditorProps> = ({
         </div>
       )}
 
+      {/* Source Question Paper Citation if applicable */}
+      {worksheet.sourceQuestionPaper && (
+        <div className="mt-3 p-3 bg-gradient-to-r from-emerald-50 via-teal-50 to-indigo-50 border border-emerald-200 rounded-xl flex items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2.5">
+            <Sparkles className="w-4 h-4 text-emerald-600 shrink-0" />
+            <div>
+              <span className="font-extrabold text-emerald-950">
+                Parallel Version of: {worksheet.sourceQuestionPaper.originalTitle}
+              </span>
+              <span className="text-slate-600 ml-2 hidden sm:inline">
+                (Generated with fresh questions, varied numbers & verified answers)
+              </span>
+            </div>
+          </div>
+          <span className="px-2 py-0.5 rounded-md text-[10px] font-black uppercase bg-emerald-200 text-emerald-900 shrink-0">
+            Set B Twin Paper
+          </span>
+        </div>
+      )}
+
       {/* Reading passage preview if applicable */}
       {worksheet.passage && (
         <div className="mt-3.5 p-4 bg-slate-50 rounded-xl text-xs border border-slate-300 font-serif leading-relaxed text-slate-800">
