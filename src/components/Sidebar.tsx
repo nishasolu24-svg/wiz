@@ -366,26 +366,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </span>
             </button>
           </div>
-
-
-
-
-                  <path
-                    className="opacity-20"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                    fill="none"
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  />
-                  <path
-
-                    strokeDasharray="67, 100"
-                    strokeWidth="4"
-                    strokeLinecap="round"
-                    fill="none"
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  />
-          </div>
         </div>
 
         {/* Bottom Dock: Theme Switcher & User Profile */}

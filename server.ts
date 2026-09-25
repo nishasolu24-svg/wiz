@@ -2,7 +2,6 @@ import express from 'express';
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI, Type } from '@google/genai';
-import { PDFParse } from 'pdf-parse';
 import dotenv from 'dotenv';
 import Stripe from 'stripe';
 import { EDUCATIONAL_DIAGRAMS, findMatchingDiagrams } from './src/data/educationalDiagrams.js';
@@ -1139,6 +1138,8 @@ async function startServer() {
         return res.status(400).json({ error: 'The uploaded file was empty.' });
       }
 
+      // Lazy-load PDF parser so server startup does not fail if runtime lacks optional native/DOM dependencies.
+      const { PDFParse } = await import('pdf-parse');
       const parser = new PDFParse({ data: buffer });
       const result = await parser.getText();
 
