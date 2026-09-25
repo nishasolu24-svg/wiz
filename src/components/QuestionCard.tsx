@@ -170,7 +170,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
 
   return (
     <div
-      className={`question-item rounded-xl border transition-all duration-200 overflow-hidden shadow-xs ${
+      className={`question-item rounded-xl border transition-all duration-200 overflow-hidden shadow-xs text-slate-900 ${
         showAnswers
           ? 'bg-white border-emerald-200'
           : 'bg-white border-slate-200 hover:border-slate-300'
@@ -536,28 +536,21 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
               {question.options.map((opt, optIdx) => {
                 const letter = String.fromCharCode(65 + optIdx);
                 const isCorrect = showAnswers && opt.trim() === question.correctAnswer?.trim();
-                const optionColors = [
-                  'bg-blue-100 text-blue-700 border-blue-200',
-                  'bg-purple-100 text-purple-700 border-purple-200',
-                  'bg-amber-100 text-amber-800 border-amber-200',
-                  'bg-emerald-100 text-emerald-800 border-emerald-200',
-                ];
-                const badgeColor = optionColors[optIdx % optionColors.length];
 
                 return (
                   <div
                     key={optIdx}
                     className={`flex items-center gap-2.5 p-3 rounded-xl text-xs font-semibold border transition-all ${
                       isCorrect
-                        ? 'bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-500 text-emerald-950 font-bold ring-2 ring-emerald-300'
-                        : 'border-slate-200 bg-slate-50/70 text-slate-700 hover:bg-slate-100/80 hover:border-slate-300'
+                        ? 'bg-emerald-50 border-emerald-500 text-emerald-950 font-bold ring-1 ring-emerald-500'
+                        : 'border-slate-200 bg-slate-50/70 text-slate-700 hover:bg-slate-100 hover:border-slate-300'
                     }`}
                   >
                     <div
-                      className={`w-5 h-5 rounded-lg border flex items-center justify-center text-[10px] font-black shrink-0 ${
+                      className={`w-5 h-5 rounded-md border flex items-center justify-center text-[10px] font-bold shrink-0 ${
                         isCorrect
-                          ? 'bg-emerald-600 border-emerald-600 text-white shadow-2xs'
-                          : badgeColor
+                          ? 'bg-emerald-600 border-emerald-600 text-white'
+                          : 'bg-white border-slate-300 text-slate-700'
                       }`}
                     >
                       {isCorrect ? '✓' : letter}
@@ -663,13 +656,13 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
 
           {/* Teacher Answer Key Revealed Mode */}
           {showAnswers && (
-            <div className="mt-3 p-4 rounded-xl bg-gradient-to-r from-emerald-50 via-teal-50 to-cyan-50 border-2 border-emerald-300 text-xs space-y-2 animate-fadeIn shadow-2xs">
-              <div className="flex items-center gap-2 font-black text-emerald-950">
-                <span className="w-6 h-6 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
-                  <CheckCircle2 className="w-4 h-4 text-white" />
+            <div className="mt-3 p-4 rounded-xl bg-emerald-50/70 border border-emerald-200 text-xs space-y-2 animate-fadeIn">
+              <div className="flex items-center gap-2 font-bold text-emerald-950">
+                <span className="w-5 h-5 rounded-md bg-emerald-600 text-white flex items-center justify-center shrink-0">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-white" />
                 </span>
-                <span className="text-xs uppercase tracking-wide">Answer Key:</span>
-                <span className="font-bold text-emerald-950 font-mono bg-white px-3 py-1 rounded-lg border border-emerald-300 shadow-2xs">
+                <span className="text-xs uppercase tracking-wide">Answer:</span>
+                <span className="font-semibold text-emerald-950 font-mono bg-white px-2.5 py-1 rounded-md border border-emerald-200">
                   {question.correctAnswer || question.finalAnswer || question.sampleAnswer || 'See solution guide'}
                 </span>
               </div>

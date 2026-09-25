@@ -25,7 +25,7 @@ interface UserWorksheetsDashboardProps {
   onPrintWorksheet: (ws: Worksheet) => void;
   onDeleteWorksheet: (id: string) => void;
   onFocusPrompt?: () => void;
-  onOpenBookPdf?: () => void;
+  onOpenBookPdf?: (mode?: 'question_paper' | 'book') => void;
 }
 
 export const UserWorksheetsDashboard: React.FC<UserWorksheetsDashboardProps> = ({
@@ -210,78 +210,19 @@ export const UserWorksheetsDashboard: React.FC<UserWorksheetsDashboardProps> = (
           </div>
         </div>
       ) : (
-        /* Empty State: No questions & answers on default homepage */
-        <div className="bg-white rounded-xl border border-slate-200 p-8 sm:p-10 text-center max-w-2xl mx-auto space-y-5 shadow-xs">
-          <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto">
-            <Sparkles className="w-6 h-6" />
+        /* Minimal Empty State */
+        <div className="bg-white rounded-2xl border border-slate-200/90 p-8 text-center max-w-xl mx-auto space-y-3 shadow-xs">
+          <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mx-auto border border-purple-100">
+            <Sparkles className="w-5 h-5 text-purple-600" />
           </div>
 
-          <div className="space-y-1.5 max-w-md mx-auto">
-            <h3 className="text-lg font-bold text-slate-900">
-              Ready to create your questionnaire?
+          <div className="space-y-1">
+            <h3 className="text-sm font-bold text-slate-900 tracking-tight">
+              No assessments created yet
             </h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              Enter any topic in the box above and click{' '}
-              <strong className="text-indigo-600 font-semibold">Generate Questionnaire</strong>, or
-              upload curriculum notes from a book PDF.
+            <p className="text-xs text-slate-500 leading-relaxed max-w-sm mx-auto">
+              Select a pathway from the side menu to generate your first worksheet, quiz, or parallel exam.
             </p>
-          </div>
-
-          {/* Quick Feature Highlights */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1 text-left">
-            <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
-              <div className="text-xs font-semibold text-slate-900 mb-1">
-                Grade & Subject Aware
-              </div>
-              <p className="text-[11px] text-slate-500 leading-normal">
-                Curriculum-aligned questions across Math, Science, Language Arts, and History.
-              </p>
-            </div>
-
-            <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
-              <div className="text-xs font-semibold text-slate-900 mb-1">
-                Complete Answer Keys
-              </div>
-              <p className="text-[11px] text-slate-500 leading-normal">
-                Step-by-step solutions, explanations, and student scaffolding hints included.
-              </p>
-            </div>
-
-            <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
-              <div className="text-xs font-semibold text-slate-900 mb-1">
-                In-Browser Testing
-              </div>
-              <p className="text-[11px] text-slate-500 leading-normal">
-                Digital quizzes with timers, instant grading, and printable classroom formats.
-              </p>
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="pt-2 flex items-center justify-center gap-2.5 flex-wrap">
-            {onFocusPrompt && (
-              <button
-                type="button"
-                onClick={onFocusPrompt}
-                id="btn-empty-start-prompt"
-                className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-xs transition-colors"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>Enter Prompt Above</span>
-              </button>
-            )}
-
-            {onOpenBookPdf && (
-              <button
-                type="button"
-                onClick={onOpenBookPdf}
-                id="btn-empty-upload-book"
-                className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white hover:bg-slate-50 text-slate-700 text-xs font-medium border border-slate-200 shadow-2xs transition-colors"
-              >
-                <BookOpen className="w-3.5 h-3.5 text-slate-500" />
-                <span>Upload PDF</span>
-              </button>
-            )}
           </div>
         </div>
       )}

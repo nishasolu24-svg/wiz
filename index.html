@@ -5,17 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WizSheet AI - Worksheet Generator</title>
     <meta name="description" content="Customized quiz and practice worksheet generator for teachers to build assessments from uploaded book PDFs, free educational diagrams, printable handouts, and answer keys." />
-    <meta property="og:title" content="WizSheet AI - Worksheet Generator" />
-    <meta property="og:description" content="Customized quiz and practice worksheet generator for teachers to build assessments from uploaded book PDFs, free educational diagrams, printable handouts, and answer keys." />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+    <!-- Tailwind CSS CDN (Prevents blank renders when CSS bundler isn't running) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Import Map for AI Studio WebContainer Execution -->
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18.2.0",
+          "react-dom": "https://esm.sh/react-dom@18.2.0",
+          "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+          "lucide-react": "https://esm.sh/lucide-react@0.263.1"
+        }
+      }
+    </script>
   </head>
   <body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-

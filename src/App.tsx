@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Sidebar, SidebarTheme } from './components/Sidebar';
 import { Header } from './components/Header';
 import { HomePromptWindow } from './components/HomePromptWindow';
 import { WorksheetGeneratorModal } from './components/WorksheetGeneratorModal';
@@ -18,6 +19,9 @@ import { PricingModal } from './components/PricingModal';
 import { AdminPortalModal } from './components/AdminPortalModal';
 import { WebsiteUsageCounter } from './components/WebsiteUsageCounter';
 import { UserWorksheetsDashboard } from './components/UserWorksheetsDashboard';
+import { QuickFeaturesGrid } from './components/QuickFeaturesGrid';
+import { HeroLandingBanner } from './components/HeroLandingBanner';
+import { StudentAnalyzeView } from './components/StudentAnalyzeView';
 import { SAMPLE_WORKSHEETS } from './data/sampleWorksheets';
 import { Worksheet, Question, WorksheetGenerationRequest, TeacherProfile } from './types';
 import { authService } from './services/authService';
@@ -72,6 +76,18 @@ export default function App() {
   const [authModalMode, setAuthModalMode] = useState<'signin' | 'register'>('signin');
   const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
   const [isAdminPortalOpen, setIsAdminPortalOpen] = useState(false);
+
+  // Side Menu Bar state (reference design)
+  const [sidebarActiveTab, setSidebarActiveTab] = useState<string>('home');
+  const [sidebarTheme, setSidebarTheme] = useState<SidebarTheme>(() => {
+    try {
+      return (localStorage.getItem('wizsheet_sidebar_theme') as SidebarTheme) || 'purple';
+    } catch {
+      return 'purple';
+    }
+  });
+  const [isSidebarMobileOpen, setIsSidebarMobileOpen] = useState<boolean>(false);
+  const [forceShowDirectives, setForceShowDirectives] = useState<boolean>(false);
 
   // Subscribe to auth & profile updates (syncs Firebase login & tier changes)
   useEffect(() => {
@@ -568,42 +584,256 @@ export default function App() {
     }, 100);
   };
 
+  const handleCreateFromScratch = () => {
+    const freshWorksheet: Worksheet = {
+      id: `ws-custom-${Date.now()}`,
+      title: 'Classroom Assessment & Practice Worksheet',
+      subtitle: 'Self-Authored Interactive Quiz & Handout',
+      subject: 'General Education',
+      gradeLevel: 'Grade 5',
+      category: 'practice',
+      difficulty: 'standard',
+      schoolName: teacherProfile.schoolName || 'Community Academy',
+      teacherName: teacherProfile.name || 'Teacher',
+      totalPoints: 0,
+      instructions: 'Answer each question carefully. Check your work before final submission.',
+      createdAt: new Date().toISOString(),
+      versionLabel: 'Version A',
+      questions: [],
+    };
+    setCurrentWorksheet(freshWorksheet);
+    setViewMode('editor');
+    setIsCustomQuestionModalOpen(true);
+    setTimeout(() => {
+      questionnaireSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 80);
+  };
+
+  const appThemeClasses = {
+    purple: {
+      root: 'bg-[#150730] text-purple-100 selection:bg-purple-900 selection:text-white',
+      mainArea: 'text-purple-100',
+      activeBanner: 'bg-[#22114F] border-purple-500/30 text-white shadow-md',
+      backBtn: 'bg-[#160838] hover:bg-[#200B4D] text-purple-200 hover:text-white border border-purple-400/30',
+      title: 'text-white',
+      tag: 'bg-amber-400/20 text-amber-300 border border-amber-400/30',
+      newBtn: 'bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black shadow-md',
+      questionsSubtext: 'text-purple-300/80',
+    },
+    blue: {
+      root: 'bg-[#07162C] text-blue-100 selection:bg-blue-900 selection:text-white',
+      mainArea: 'text-blue-100',
+      activeBanner: 'bg-[#0D284E] border-blue-400/30 text-white shadow-md',
+      backBtn: 'bg-[#061830] hover:bg-[#0D2952] text-blue-200 hover:text-white border border-blue-400/30',
+      title: 'text-white',
+      tag: 'bg-cyan-400/20 text-cyan-300 border border-cyan-400/30',
+      newBtn: 'bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 font-black shadow-md',
+      questionsSubtext: 'text-blue-300/80',
+    },
+    light: {
+      root: 'bg-slate-50 text-slate-900 selection:bg-purple-100 selection:text-purple-900',
+      mainArea: 'text-slate-900',
+      activeBanner: 'bg-white border-slate-200 text-slate-900 shadow-xs',
+      backBtn: 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200',
+      title: 'text-slate-900',
+      tag: 'bg-indigo-50 text-indigo-700 border border-indigo-200',
+      newBtn: 'bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-xs',
+      questionsSubtext: 'text-slate-500',
+    },
+  }[sidebarTheme] || {
+    root: 'bg-slate-50 text-slate-900',
+    mainArea: 'text-slate-900',
+    activeBanner: 'bg-white border-slate-200 text-slate-900',
+    backBtn: 'bg-slate-100 text-slate-700 border border-slate-200',
+    title: 'text-slate-900',
+    tag: 'bg-indigo-50 text-indigo-700',
+    newBtn: 'bg-indigo-600 text-white',
+    questionsSubtext: 'text-slate-500',
+  };
+
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-50/60 via-indigo-50/20 to-white text-slate-800 font-sans selection:bg-indigo-100 selection:text-indigo-900">
-      {/* Top App Header */}
-      <Header
-        onOpenGenerator={() => setIsGeneratorOpen(true)}
+    <div className={`min-h-screen flex font-sans transition-colors duration-200 ${appThemeClasses.root}`}>
+      {/* Left Side Menu Bar (inspired by reference design) */}
+      <Sidebar
+        activeTab={sidebarActiveTab}
+        onSelectTab={(tab) => {
+          setSidebarActiveTab(tab);
+          if (tab === 'home') {
+            setCurrentWorksheet(null);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } else if (tab === 'prompt_topic') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => {
+              const input = document.getElementById('input-questionnaire-topic') as HTMLInputElement | null;
+              input?.focus();
+            }, 100);
+          } else if (tab === 'student_analyze') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } else if (tab === 'interactive' || tab === 'task') {
+            if (!currentWorksheet && SAMPLE_WORKSHEETS.length > 0) {
+              setCurrentWorksheet(SAMPLE_WORKSHEETS[0]);
+            }
+            setViewMode('interactive');
+            setTimeout(() => {
+              questionnaireSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 80);
+          } else if (tab === 'upload_exam') {
+            setBookPdfModalMode('question_paper');
+            setIsBookPdfModalOpen(true);
+          } else if (tab === 'upload_book') {
+            setBookPdfModalMode('book');
+            setIsBookPdfModalOpen(true);
+          } else if (tab === 'saved_questionnaires' || tab === 'activity') {
+            setIsSavedOpen(true);
+          } else if (tab === 'users') {
+            setIsAdminPortalOpen(true);
+          } else if (tab === 'notification') {
+            setLastGeneratedAlert('All systems operational. Cloud AI models and assessment generation are ready.');
+          } else if (tab === 'setting') {
+            setIsFreeTierOpen(true);
+          } else if (tab === 'report') {
+            if (currentWorksheet) {
+              setIsExportOpen(true);
+            } else {
+              setIsPricingModalOpen(true);
+            }
+          } else if (tab === 'support') {
+            setCacheHitNotice('Need assistance? Select any topic or upload a Question Paper PDF to generate tests.');
+          }
+        }}
+        savedCount={savedWorksheets.length}
+        notificationCount={cacheHitNotice || lastGeneratedAlert ? 1 : 2}
+        teacherName={teacherProfile.name || 'Teacher'}
+        teacherEmail={teacherProfile.email || 'teacher@school.edu'}
+        isLoggedIn={Boolean(teacherProfile.isLoggedIn || authService.isSignedIn())}
+        theme={sidebarTheme}
+        onThemeChange={(th) => {
+          setSidebarTheme(th);
+          try {
+            localStorage.setItem('wizsheet_sidebar_theme', th);
+          } catch {}
+        }}
+        isCollapsed={false}
         onOpenSaved={() => setIsSavedOpen(true)}
-        onPrint={() => handlePrint(viewMode === 'answer_key' ? 'answer_key' : 'student')}
-        onOpenExport={() => setIsExportOpen(true)}
-        onOpenFreeTierSettings={() => setIsFreeTierOpen(true)}
-        onOpenBookPdf={(mode = 'question_paper') => {
-          setBookPdfModalMode(mode);
-          setIsBookPdfModalOpen(true);
+        onOpenSettings={() => setIsFreeTierOpen(true)}
+        onOpenReport={() => {
+          if (currentWorksheet) setIsExportOpen(true);
+          else setIsPricingModalOpen(true);
+        }}
+        onOpenSupport={() => {
+          setCacheHitNotice('Need assistance? Select any topic or upload a Question Paper PDF to generate tests.');
         }}
         onOpenAuth={(mode) => {
           setAuthModalMode(mode || 'signin');
           setIsAuthModalOpen(true);
         }}
-        onOpenPricing={() => setIsPricingModalOpen(true)}
-        onOpenAdmin={() => setIsAdminPortalOpen(true)}
-        onNavigateHome={() => {
-          setCurrentWorksheet(null);
+        onOpenQuestionPaperModal={() => {
+          setBookPdfModalMode('question_paper');
+          setIsBookPdfModalOpen(true);
+        }}
+        onOpenBookPdfModal={() => {
+          setBookPdfModalMode('book');
+          setIsBookPdfModalOpen(true);
+        }}
+        onToggleDirectives={() => {
+          setSidebarActiveTab('prompt_topic');
+          setForceShowDirectives((prev) => !prev);
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
-        savedCount={savedWorksheets.length}
-        hasWorksheet={Boolean(currentWorksheet)}
-        remainingQuota={
-          authService.getUserTier() !== 'free' || teacherProfile.customApiKey
-            ? 'Unlimited'
-            : quotaRemaining
-        }
-        hasCustomKey={Boolean(teacherProfile.customApiKey && teacherProfile.customApiKey.length > 5)}
-        teacherName={teacherProfile.name}
+        showDirectives={forceShowDirectives}
+        onSelectSubjectGroup={(subjectGroup) => {
+          setSidebarActiveTab('prompt_topic');
+          setTimeout(() => {
+            const input = document.getElementById('input-questionnaire-topic') as HTMLInputElement | null;
+            if (input) {
+              input.value = `${subjectGroup} practice quiz`;
+              input.focus();
+              input.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+          }, 100);
+        }}
+        onSearch={(query) => {
+          if (query.trim()) {
+            setSidebarActiveTab('prompt_topic');
+            setTimeout(() => {
+              const input = document.getElementById('input-questionnaire-topic') as HTMLInputElement | null;
+              if (input) {
+                input.value = query;
+                input.focus();
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+              }
+            }, 100);
+          }
+        }}
+        isOpenMobile={isSidebarMobileOpen}
+        onCloseMobile={() => setIsSidebarMobileOpen(false)}
       />
 
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 min-h-screen">
+        {/* Top App Header */}
+        <Header
+          onOpenGenerator={() => setIsGeneratorOpen(true)}
+          onOpenSaved={() => setIsSavedOpen(true)}
+          onPrint={() => handlePrint(viewMode === 'answer_key' ? 'answer_key' : 'student')}
+          onOpenExport={() => setIsExportOpen(true)}
+          onOpenFreeTierSettings={() => setIsFreeTierOpen(true)}
+          onOpenBookPdf={(mode = 'question_paper') => {
+            setBookPdfModalMode(mode);
+            setIsBookPdfModalOpen(true);
+          }}
+          onOpenAuth={(mode) => {
+            setAuthModalMode(mode || 'signin');
+            setIsAuthModalOpen(true);
+          }}
+          onOpenPricing={() => setIsPricingModalOpen(true)}
+          onOpenAdmin={() => setIsAdminPortalOpen(true)}
+          onNavigateHome={() => {
+            setCurrentWorksheet(null);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          onToggleSidebar={() => setIsSidebarMobileOpen(true)}
+          savedCount={savedWorksheets.length}
+          hasWorksheet={Boolean(currentWorksheet)}
+          remainingQuota={
+            authService.getUserTier() !== 'free' || teacherProfile.customApiKey
+              ? 'Unlimited'
+              : quotaRemaining
+          }
+          hasCustomKey={Boolean(teacherProfile.customApiKey && teacherProfile.customApiKey.length > 5)}
+          teacherName={teacherProfile.name}
+          theme={sidebarTheme}
+          activeNavTab={sidebarActiveTab}
+          onSelectNavTab={(tab) => {
+            setSidebarActiveTab(tab);
+            if (tab === 'home') {
+              setCurrentWorksheet(null);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (tab === 'prompt_topic') {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              setTimeout(() => {
+                const input = document.getElementById('input-questionnaire-topic') as HTMLInputElement | null;
+                input?.focus();
+              }, 100);
+            } else if (tab === 'interactive') {
+              if (!currentWorksheet && SAMPLE_WORKSHEETS.length > 0) {
+                setCurrentWorksheet(SAMPLE_WORKSHEETS[0]);
+              }
+              setViewMode('interactive');
+              setTimeout(() => {
+                questionnaireSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }, 80);
+            } else {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }}
+          diamonds={90}
+          coins={77}
+          dayStreak={9}
+        />
+
       {/* Main Workspace Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+      <main className={`flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6 ${appThemeClasses.mainArea}`}>
         {/* Instant Cache Hit Notification */}
         {cacheHitNotice && (
           <div className="no-print p-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-white text-sm flex items-center justify-between shadow-lg shadow-emerald-200 animate-fadeIn">
@@ -621,42 +851,51 @@ export default function App() {
           </div>
         )}
 
-        {/* Home Prompt Window for submitting topic to LLM */}
-        <HomePromptWindow
-          onGenerate={handleGenerate}
-          isGenerating={isGenerating}
-          error={generationError}
-          currentTopic={currentWorksheet?.title}
-          onTakeTestOnline={() => {
-            setViewMode('interactive');
-            setTimeout(() => {
-              questionnaireSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 80);
-          }}
-          onOpenCustomQuestion={() => {
-            if (!teacherProfile.isLoggedIn && !authService.isSignedIn()) {
-              setAuthModalMode('signin');
+        {/* Home Prompt Window for submitting topic to LLM (shown when in prompt_topic tab or when editing) */}
+        {(sidebarActiveTab === 'prompt_topic' || Boolean(currentWorksheet)) && (
+          <HomePromptWindow
+            onGenerate={handleGenerate}
+            isGenerating={isGenerating}
+            error={generationError}
+            currentTopic={currentWorksheet?.title}
+            minimal={sidebarActiveTab === 'home'}
+            forceShowDirectives={forceShowDirectives}
+            theme={sidebarTheme}
+            onOpenFullStudio={() => {
+              setSidebarActiveTab('prompt_topic');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onTakeTestOnline={() => {
+              setViewMode('interactive');
+              setTimeout(() => {
+                questionnaireSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }, 80);
+            }}
+            onOpenCustomQuestion={() => {
+              if (!teacherProfile.isLoggedIn && !authService.isSignedIn()) {
+                setAuthModalMode('signin');
+                setIsAuthModalOpen(true);
+                return;
+              }
+              setIsCustomQuestionModalOpen(true);
+            }}
+            onOpenBookPdfModal={(mode = 'question_paper') => {
+              if (!teacherProfile.isLoggedIn && !authService.isSignedIn()) {
+                setAuthModalMode('signin');
+                setIsAuthModalOpen(true);
+                return;
+              }
+              setBookPdfModalMode(mode);
+              setIsBookPdfModalOpen(true);
+            }}
+            hasCurrentWorksheet={Boolean(currentWorksheet)}
+            isLoggedIn={Boolean(teacherProfile.isLoggedIn || authService.isSignedIn())}
+            onOpenAuth={(mode = 'signin') => {
+              setAuthModalMode(mode);
               setIsAuthModalOpen(true);
-              return;
-            }
-            setIsCustomQuestionModalOpen(true);
-          }}
-          onOpenBookPdfModal={(mode = 'question_paper') => {
-            if (!teacherProfile.isLoggedIn && !authService.isSignedIn()) {
-              setAuthModalMode('signin');
-              setIsAuthModalOpen(true);
-              return;
-            }
-            setBookPdfModalMode(mode);
-            setIsBookPdfModalOpen(true);
-          }}
-          hasCurrentWorksheet={Boolean(currentWorksheet)}
-          isLoggedIn={Boolean(teacherProfile.isLoggedIn || authService.isSignedIn())}
-          onOpenAuth={(mode = 'signin') => {
-            setAuthModalMode(mode);
-            setIsAuthModalOpen(true);
-          }}
-        />
+            }}
+          />
+        )}
 
         {/* Dynamic Success Notification when LLM builds new Questionnaire */}
         {lastGeneratedAlert && (
@@ -680,52 +919,100 @@ export default function App() {
         {/* Questionnaire Section Anchor */}
         <div ref={questionnaireSectionRef} />
 
-        {/* If no current worksheet active: show clean UserWorksheetsDashboard (no questions/answers displayed) */}
+        {/* If no current worksheet active: show clean modern template views matching user reference images */}
         {!currentWorksheet ? (
-          <UserWorksheetsDashboard
-            worksheets={savedWorksheets}
-            userDisplayName={teacherProfile.name || teacherProfile.email || 'Teacher'}
-            onOpenWorksheet={(ws) => {
-              setCurrentWorksheet(ws);
-              setViewMode('editor');
-              setTimeout(() => {
-                questionnaireSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }, 80);
-            }}
-            onTakeQuiz={(ws) => {
-              setCurrentWorksheet(ws);
-              setViewMode('interactive');
-              setTimeout(() => {
-                questionnaireSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }, 80);
-            }}
-            onPrintWorksheet={(ws) => {
-              setCurrentWorksheet(ws);
-              setPrintMode('student');
-              setViewMode('print_preview');
-              setTimeout(() => {
-                questionnaireSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }, 80);
-            }}
-            onDeleteWorksheet={handleDeleteSavedWorksheet}
-            onFocusPrompt={() => {
-              const input = document.getElementById('input-questionnaire-topic');
-              input?.focus();
-              input?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }}
-            onOpenBookPdf={() => {
-              if (!teacherProfile.isLoggedIn && !authService.isSignedIn()) {
-                setAuthModalMode('signin');
-                setIsAuthModalOpen(true);
-                return;
-              }
-              setIsBookPdfModalOpen(true);
-            }}
-          />
+          <div className="space-y-8">
+            {sidebarActiveTab === 'student_analyze' ? (
+              <div className="space-y-4">
+                <StudentAnalyzeView
+                  onSelectWorksheet={(id) => {
+                    const found = SAMPLE_WORKSHEETS.find((w) => w.id === id);
+                    if (found) {
+                      setCurrentWorksheet(found);
+                      setViewMode('interactive');
+                    }
+                  }}
+                  onOpenGenerator={() => {
+                    setSidebarActiveTab('prompt_topic');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  theme={sidebarTheme}
+                />
+              </div>
+            ) : (
+              /* Default Home View */
+              <div className="space-y-8">
+                {/* 1. Hero Landing Banner */}
+                <HeroLandingBanner
+                  onCreateFromScratch={handleCreateFromScratch}
+                  onGenerateByAI={() => {
+                    setSidebarActiveTab('prompt_topic');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    setTimeout(() => {
+                      const input = document.getElementById('input-questionnaire-topic') as HTMLInputElement | null;
+                      input?.focus();
+                    }, 100);
+                  }}
+                  theme={sidebarTheme}
+                />
+
+                {/* 2. Quick Features Grid (Twin Exam, Textbook notes, Saved questionnaires) */}
+                <QuickFeaturesGrid
+                  savedCount={savedWorksheets.length}
+                  theme={sidebarTheme}
+                  onOpenPromptStudio={() => {
+                    setSidebarActiveTab('prompt_topic');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    setTimeout(() => {
+                      const input = document.getElementById('input-questionnaire-topic') as HTMLInputElement | null;
+                      input?.focus();
+                    }, 80);
+                  }}
+                  onOpenQuestionPaper={() => {
+                    if (!teacherProfile.isLoggedIn && !authService.isSignedIn()) {
+                      setAuthModalMode('signin');
+                      setIsAuthModalOpen(true);
+                      return;
+                    }
+                    setBookPdfModalMode('question_paper');
+                    setIsBookPdfModalOpen(true);
+                  }}
+                  onOpenBookPdf={() => {
+                    if (!teacherProfile.isLoggedIn && !authService.isSignedIn()) {
+                      setAuthModalMode('signin');
+                      setIsAuthModalOpen(true);
+                      return;
+                    }
+                    setBookPdfModalMode('book');
+                    setIsBookPdfModalOpen(true);
+                  }}
+                  onOpenSavedQuestionnaires={() => {
+                    setIsSavedOpen(true);
+                  }}
+                  onOpenTakeTest={() => {
+                    if (SAMPLE_WORKSHEETS.length > 0) {
+                      setCurrentWorksheet(SAMPLE_WORKSHEETS[0]);
+                      setViewMode('interactive');
+                      setTimeout(() => {
+                        questionnaireSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }, 80);
+                    } else {
+                      setIsSavedOpen(true);
+                    }
+                  }}
+                  onOpenCustomDirectives={() => {
+                    setSidebarActiveTab('prompt_topic');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    setForceShowDirectives(true);
+                  }}
+                />
+              </div>
+            )}
+          </div>
         ) : (
           <div className="space-y-6">
             {/* Active Questionnaire Top Banner with Return to Home */}
-            <div className="no-print bg-white rounded-xl border border-slate-200 p-3 shadow-xs flex flex-wrap items-center justify-between gap-3">
+            <div className={`no-print rounded-xl border p-3 flex flex-wrap items-center justify-between gap-3 ${appThemeClasses.activeBanner}`}>
               <div className="flex items-center gap-2 sm:gap-3">
                 <button
                   type="button"
@@ -734,20 +1021,20 @@ export default function App() {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
                   id="btn-back-to-home"
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors"
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${appThemeClasses.backBtn}`}
                   title="Close questionnaire and return to dashboard"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
                   <span>Back to Library</span>
                 </button>
 
-                <div className="h-4 w-px bg-slate-200 hidden sm:block" />
+                <div className="h-4 w-px bg-current opacity-20 hidden sm:block" />
 
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-slate-900 line-clamp-1 max-w-[200px] sm:max-w-md">
+                  <span className={`text-xs font-bold line-clamp-1 max-w-[200px] sm:max-w-md ${appThemeClasses.title}`}>
                     {currentWorksheet.title}
                   </span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200 hidden sm:inline-block">
+                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md hidden sm:inline-block border ${appThemeClasses.tag}`}>
                     Active
                   </span>
                 </div>
@@ -764,7 +1051,7 @@ export default function App() {
                     }, 150);
                   }}
                   id="btn-create-new-questionnaire-bar"
-                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-xs transition-colors"
+                  className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${appThemeClasses.newBtn}`}
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>New Questionnaire</span>
@@ -788,6 +1075,7 @@ export default function App() {
               fontStyle={fontStyle}
               onChangeFontStyle={setFontStyle}
               onPrint={() => handlePrint(viewMode === 'answer_key' ? 'answer_key' : 'student')}
+              theme={sidebarTheme}
             />
 
             {/* View Mode Switching */}
@@ -796,6 +1084,7 @@ export default function App() {
               <InteractiveQuizView
                 worksheet={currentWorksheet}
                 onExit={() => setViewMode('editor')}
+                theme={sidebarTheme}
               />
             ) : viewMode === 'print_preview' ? (
               /* Exact Printable Page Preview */
@@ -830,11 +1119,11 @@ export default function App() {
 
                 {/* Questions Container */}
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between text-xs text-slate-500 font-semibold px-1">
+                  <div className={`flex items-center justify-between text-xs font-semibold px-1 ${appThemeClasses.questionsSubtext}`}>
                     <span>
                       {currentWorksheet.questions.length} Questions ({currentWorksheet.totalPoints} Total Points)
                     </span>
-                    <span className="text-[11px] text-slate-400">
+                    <span className="text-[11px] opacity-75">
                       Click the pencil icon on any question to edit text or answers
                     </span>
                   </div>
@@ -1025,6 +1314,7 @@ export default function App() {
           <span className="text-slate-600 font-semibold">{isSavedStatus ? 'Autosaved' : 'Draft'}</span>
         </div>
       </footer>
+      </div>
     </div>
   );
 }

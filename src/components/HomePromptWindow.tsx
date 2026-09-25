@@ -40,6 +40,10 @@ interface HomePromptWindowProps {
   hasCurrentWorksheet?: boolean;
   isLoggedIn?: boolean;
   onOpenAuth?: (mode?: 'signin' | 'register') => void;
+  minimal?: boolean;
+  forceShowDirectives?: boolean;
+  onOpenFullStudio?: () => void;
+  theme?: 'light' | 'purple' | 'blue';
 }
 
 const QUICK_TOPICS = [
@@ -195,6 +199,10 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
   hasCurrentWorksheet = true,
   isLoggedIn = false,
   onOpenAuth,
+  minimal = false,
+  forceShowDirectives = false,
+  onOpenFullStudio,
+  theme = 'purple',
 }) => {
   const [profile, setProfile] = useState<TeacherProfile>(() => authService.getProfile());
 
@@ -208,6 +216,120 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
   }, []);
 
   const userIsLoggedIn = Boolean(isLoggedIn || profile.isLoggedIn || authService.isSignedIn());
+
+  const promptTheme = {
+    purple: {
+      card: 'bg-[#210F4D] border-purple-500/30 text-white shadow-xl',
+      headerBanner: 'bg-[#180A3D]/90 border-purple-500/25',
+      heading: 'text-white',
+      subtext: 'text-purple-200/80',
+      activeBadge: 'bg-amber-400 text-slate-950 border-amber-300 font-extrabold',
+      flashBadge: 'bg-purple-500/25 text-purple-200 border-purple-400/30',
+      directivesBtn: 'bg-white/10 border-white/20 text-purple-100 hover:bg-white/20 hover:text-white',
+      directivesBtnActive: 'bg-purple-600 border-purple-400 text-white font-bold',
+      form: 'bg-[#210F4D]',
+      label: 'text-purple-200 font-bold',
+      input: 'bg-[#150835] border-purple-400/30 text-white placeholder:text-purple-300/40 focus:bg-[#1C0D44] focus:border-amber-400 focus:ring-amber-400/20',
+      inputClear: 'text-purple-300 hover:text-white',
+      primaryBtn: 'bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black shadow-md',
+      popularLabel: 'text-purple-300',
+      popularChip: 'bg-[#150835] hover:bg-purple-900/80 text-purple-100 border-purple-500/30',
+      divider: 'border-purple-500/25',
+      select: 'bg-[#150835] border-purple-400/30 text-white focus:border-amber-400 focus:ring-amber-400/20',
+      segmentBox: 'bg-[#150835] border border-purple-500/30 p-1 rounded-xl',
+      segmentActive: 'bg-white text-purple-950 font-bold shadow-xs',
+      segmentInactive: 'text-purple-200 hover:text-white',
+      countActive: 'bg-amber-400 text-slate-950 font-black shadow-xs',
+      countInactive: 'bg-[#150835] hover:bg-purple-900/60 text-purple-200 border border-purple-500/30',
+      countSubtext: 'text-purple-300/70',
+      presetChip: 'bg-[#150835] hover:bg-purple-900/70 text-purple-200 hover:text-white border-purple-500/30',
+      minimalSubtext: 'text-purple-200/80',
+      minimalStudioLink: 'text-amber-300 hover:text-amber-200 font-bold',
+    },
+    blue: {
+      card: 'bg-[#0D284E] border-blue-400/30 text-white shadow-xl',
+      headerBanner: 'bg-[#071D3A]/90 border-blue-400/25',
+      heading: 'text-white',
+      subtext: 'text-blue-200/80',
+      activeBadge: 'bg-cyan-400 text-slate-950 border-cyan-300 font-extrabold',
+      flashBadge: 'bg-blue-500/25 text-blue-200 border-blue-400/30',
+      directivesBtn: 'bg-white/10 border-white/20 text-blue-100 hover:bg-white/20 hover:text-white',
+      directivesBtnActive: 'bg-blue-600 border-blue-400 text-white font-bold',
+      form: 'bg-[#0D284E]',
+      label: 'text-blue-200 font-bold',
+      input: 'bg-[#061830] border-blue-400/30 text-white placeholder:text-blue-300/40 focus:bg-[#092244] focus:border-cyan-400 focus:ring-cyan-400/20',
+      inputClear: 'text-blue-300 hover:text-white',
+      primaryBtn: 'bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 font-black shadow-md',
+      popularLabel: 'text-blue-300',
+      popularChip: 'bg-[#061830] hover:bg-blue-900/80 text-blue-100 border-blue-400/30',
+      divider: 'border-blue-400/25',
+      select: 'bg-[#061830] border-blue-400/30 text-white focus:border-cyan-400 focus:ring-cyan-400/20',
+      segmentBox: 'bg-[#061830] border border-blue-400/30 p-1 rounded-xl',
+      segmentActive: 'bg-white text-blue-950 font-bold shadow-xs',
+      segmentInactive: 'text-blue-200 hover:text-white',
+      countActive: 'bg-cyan-400 text-slate-950 font-black shadow-xs',
+      countInactive: 'bg-[#061830] hover:bg-blue-900/60 text-blue-200 border border-blue-400/30',
+      countSubtext: 'text-blue-300/70',
+      presetChip: 'bg-[#061830] hover:bg-blue-900/70 text-blue-200 hover:text-white border-blue-400/30',
+      minimalSubtext: 'text-blue-200/80',
+      minimalStudioLink: 'text-cyan-300 hover:text-cyan-200 font-bold',
+    },
+    light: {
+      card: 'bg-white border-slate-200 text-slate-900 shadow-sm',
+      headerBanner: 'bg-slate-50/80 border-slate-200',
+      heading: 'text-slate-900',
+      subtext: 'text-slate-500',
+      activeBadge: 'bg-amber-100 text-amber-900 border-amber-300 font-extrabold',
+      flashBadge: 'bg-purple-100 text-purple-900 border-purple-200',
+      directivesBtn: 'bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50',
+      directivesBtnActive: 'bg-purple-50 border-purple-200 text-purple-700 font-semibold',
+      form: 'bg-white',
+      label: 'text-slate-700 font-bold',
+      input: 'bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-purple-600 focus:ring-purple-500/20',
+      inputClear: 'text-slate-400 hover:text-slate-600',
+      primaryBtn: 'bg-purple-600 hover:bg-purple-700 text-white font-bold shadow-xs',
+      popularLabel: 'text-slate-500',
+      popularChip: 'bg-slate-100 hover:bg-purple-50 text-slate-700 hover:text-purple-700 border-slate-200/80 hover:border-purple-200',
+      divider: 'border-slate-200',
+      select: 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500 focus:ring-purple-500/20',
+      segmentBox: 'bg-slate-100 border border-slate-200 p-1 rounded-xl',
+      segmentActive: 'bg-white text-purple-700 font-bold shadow-xs',
+      segmentInactive: 'text-slate-600 hover:text-slate-900',
+      countActive: 'bg-purple-600 text-white font-bold shadow-xs',
+      countInactive: 'bg-slate-100 hover:bg-slate-200 text-slate-700',
+      countSubtext: 'text-slate-400',
+      presetChip: 'bg-slate-100 hover:bg-purple-50 text-slate-600 hover:text-purple-700 border-slate-200',
+      minimalSubtext: 'text-slate-500',
+      minimalStudioLink: 'text-purple-600 hover:text-purple-700 font-bold',
+    },
+  }[theme] || {
+    card: 'bg-white border-slate-200 text-slate-900 shadow-sm',
+    headerBanner: 'bg-slate-50/80 border-slate-200',
+    heading: 'text-slate-900',
+    subtext: 'text-slate-500',
+    activeBadge: 'bg-amber-100 text-amber-900 border-amber-300 font-extrabold',
+    flashBadge: 'bg-purple-100 text-purple-900 border-purple-200',
+    directivesBtn: 'bg-white border-slate-200 text-slate-600 hover:text-slate-900',
+    directivesBtnActive: 'bg-purple-50 border-purple-200 text-purple-700 font-semibold',
+    form: 'bg-white',
+    label: 'text-slate-700 font-bold',
+    input: 'bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-400',
+    inputClear: 'text-slate-400 hover:text-slate-600',
+    primaryBtn: 'bg-purple-600 hover:bg-purple-700 text-white font-bold shadow-xs',
+    popularLabel: 'text-slate-500',
+    popularChip: 'bg-slate-100 hover:bg-purple-50 text-slate-700',
+    divider: 'border-slate-200',
+    select: 'bg-slate-50 border-slate-200 text-slate-800',
+    segmentBox: 'bg-slate-100 border border-slate-200 p-1 rounded-xl',
+    segmentActive: 'bg-white text-purple-700 font-bold',
+    segmentInactive: 'text-slate-600 hover:text-slate-900',
+    countActive: 'bg-purple-600 text-white font-bold',
+    countInactive: 'bg-slate-100 text-slate-700',
+    countSubtext: 'text-slate-400',
+    presetChip: 'bg-slate-100 text-slate-600 border-slate-200',
+    minimalSubtext: 'text-slate-500',
+    minimalStudioLink: 'text-purple-600 hover:text-purple-700 font-bold',
+  };
 
   const [topic, setTopic] = useState(currentTopic || '');
   const [subject, setSubject] = useState(() => {
@@ -232,6 +354,12 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
   const [questionFormat, setQuestionFormat] = useState<QuestionFormatOption>('both');
   const [showOptions, setShowOptions] = useState(false);
   const [specialInstructions, setSpecialInstructions] = useState('');
+
+  useEffect(() => {
+    if (forceShowDirectives) {
+      setShowOptions(true);
+    }
+  }, [forceShowDirectives]);
 
   const handleTopicChange = (val: string) => {
     setTopic(val);
@@ -279,69 +407,120 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
     setUserSelectedGrade(true);
   };
 
+  if (minimal) {
+    return (
+      <div className={`no-print rounded-2xl border ${promptTheme.card} p-4 sm:p-5 transition-all`}>
+        <form onSubmit={handleSubmit} className="space-y-3">
+          {error && (
+            <div className="p-2.5 rounded-xl bg-rose-500/20 border border-rose-400 text-rose-200 text-xs font-medium">
+              {error}
+            </div>
+          )}
+
+          <div className="flex flex-col sm:flex-row gap-2.5">
+            <div className="relative flex-1">
+              <input
+                type="text"
+                value={topic}
+                onChange={(e) => handleTopicChange(e.target.value)}
+                placeholder="What would you like to create? (e.g. Fractions, Cell Biology, Grade 8 Algebra)..."
+                disabled={isGenerating}
+                id="input-minimal-topic"
+                className={`w-full pl-4 pr-10 py-3 rounded-xl text-sm font-medium border outline-none transition-all ${promptTheme.input}`}
+              />
+              {topic && !isGenerating && (
+                <button
+                  type="button"
+                  onClick={() => setTopic('')}
+                  className={`absolute right-3 top-1/2 -translate-y-1/2 text-xs p-1 ${promptTheme.inputClear}`}
+                  title="Clear topic"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+
+            {!userIsLoggedIn ? (
+              <button
+                type="button"
+                onClick={() => onOpenAuth?.('signin')}
+                id="btn-minimal-signin"
+                className="px-5 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer shadow-xs"
+              >
+                <Lock className="w-4 h-4 text-purple-200" />
+                <span>Sign In to Build</span>
+              </button>
+            ) : (
+              <button
+                type="submit"
+                disabled={isGenerating || !topic.trim()}
+                id="btn-minimal-generate"
+                className={`px-6 py-3 rounded-xl font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 shrink-0 shadow-xs cursor-pointer active:scale-98 ${promptTheme.primaryBtn}`}
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin text-current" />
+                    <span>Generating...</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4 fill-current" />
+                    <span>Generate ✨</span>
+                  </>
+                )}
+              </button>
+            )}
+          </div>
+
+          <div className="flex items-center justify-between text-xs pt-0.5">
+            <span className={`truncate ${promptTheme.minimalSubtext}`}>
+              Select pathways from the side menu for Set B exams or textbooks
+            </span>
+            {onOpenFullStudio && (
+              <button
+                type="button"
+                onClick={onOpenFullStudio}
+                className={`font-semibold flex items-center gap-1 shrink-0 ml-2 cursor-pointer ${promptTheme.minimalStudioLink}`}
+              >
+                <span>Full Studio</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+        </form>
+      </div>
+    );
+  }
+
   return (
-    <div className="no-print bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all">
-      {/* Top Banner / Prompt Window Header */}
-      <div className="bg-gradient-to-r from-indigo-50 via-sky-50/50 to-white px-5 sm:px-6 py-3.5 border-b border-indigo-100 flex flex-wrap items-center justify-between gap-3">
+    <div className={`no-print rounded-2xl border overflow-hidden transition-all ${promptTheme.card}`}>
+      {/* Top Banner / Streamlined Header for Prompt from Topic */}
+      <div className={`px-5 sm:px-6 py-4 border-b flex flex-wrap items-center justify-between gap-3 ${promptTheme.headerBanner}`}>
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+          <div className="w-9 h-9 rounded-xl bg-purple-600 text-white flex items-center justify-center shrink-0 shadow-xs">
             <Sparkles className="w-4 h-4 text-amber-300" />
           </div>
           <div>
-            <h2 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight flex items-center gap-2">
-              <span>Assessment & Quiz Generator</span>
-              <span className="hidden sm:inline-flex px-2 py-0.5 rounded-md text-[10px] font-semibold bg-indigo-100 text-indigo-700 border border-indigo-200">
-                Gemini AI
+            <div className="flex items-center gap-2">
+              <h2 className={`text-base font-bold tracking-tight ${promptTheme.heading}`}>
+                Prompt from Topic
+              </h2>
+              <span className={`px-2 py-0.5 rounded-full text-[10px] border ${promptTheme.activeBadge}`}>
+                Active
               </span>
-            </h2>
-            <p className="text-xs text-slate-500">
-              Customize subject, difficulty, and question format to create assessments
+              <span className={`hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-bold border shadow-2xs ${promptTheme.flashBadge}`}>
+                <Sparkles className="w-2.5 h-2.5 fill-current" />
+                Gemini 3.8 Flash
+              </span>
+            </div>
+            <p className={`text-xs mt-0.5 ${promptTheme.subtext}`}>
+              Enter topic, standard code, or concept to generate questions
             </p>
           </div>
         </div>
 
+        {/* Quick Utility Actions */}
         <div className="flex items-center gap-2 flex-wrap">
-          {/* Upload Question Paper PDF -> Generate Similar Exam CTA */}
-          {onOpenBookPdfModal && (
-            <button
-              type="button"
-              onClick={() => {
-                if (!userIsLoggedIn) {
-                  onOpenAuth?.('signin');
-                  return;
-                }
-                onOpenBookPdfModal('question_paper');
-              }}
-              id="btn-home-open-question-paper-modal"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white shadow-xs transition-all cursor-pointer"
-              title="Upload an existing Question Paper PDF to generate a similar exam with different questions and answers"
-            >
-              <FileQuestion className="w-3.5 h-3.5 text-amber-300" />
-              <span>Similar Exam from PDF (Set B)</span>
-            </button>
-          )}
-
-          {/* Ask from Book / PDF CTA */}
-          {onOpenBookPdfModal && (
-            <button
-              type="button"
-              onClick={() => {
-                if (!userIsLoggedIn) {
-                  onOpenAuth?.('signin');
-                  return;
-                }
-                onOpenBookPdfModal('book');
-              }}
-              id="btn-home-open-book-modal"
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-slate-50 text-indigo-700 border border-indigo-200 shadow-2xs transition-all cursor-pointer"
-              title="Upload any Book or PDF to ask questions grounded directly in the text"
-            >
-              <BookOpen className="w-3.5 h-3.5 text-indigo-600" />
-              <span>Ask from Book</span>
-            </button>
-          )}
-
-          {/* Option to Take Test Online */}
           {hasCurrentWorksheet && onTakeTestOnline && (
             <button
               type="button"
@@ -353,35 +532,38 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
                 onTakeTestOnline();
               }}
               id="btn-home-take-test-online"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-all cursor-pointer"
               title="Launch interactive online test mode"
             >
-              <Play className="w-3 h-3 fill-current" />
+              <Play className="w-3.5 h-3.5 fill-current" />
               <span>Take Test Online</span>
             </button>
           )}
 
-          {/* Toggle Advanced Controls Button */}
           <button
             type="button"
             onClick={() => setShowOptions(!showOptions)}
             id="btn-toggle-advanced-settings"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-white border border-slate-200 bg-white shadow-2xs transition-all cursor-pointer"
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs border transition-all cursor-pointer ${
+              showOptions || specialInstructions
+                ? promptTheme.directivesBtnActive
+                : promptTheme.directivesBtn
+            }`}
           >
-            <SlidersHorizontal className="w-3.5 h-3.5 text-slate-500" />
-            <span className="hidden sm:inline">{showOptions ? 'Hide Directives' : 'Custom Directives'}</span>
+            <SlidersHorizontal className="w-3.5 h-3.5" />
+            <span>Custom Directives</span>
             {showOptions ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
           </button>
         </div>
       </div>
 
       {/* Main Prompt Window Form */}
-      <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-4 bg-white">
+      <form onSubmit={handleSubmit} className={`p-5 sm:p-6 space-y-4 ${promptTheme.form}`}>
         {/* Sign In Notice when unauthenticated */}
         {!userIsLoggedIn && (
-          <div className="p-3.5 rounded-xl bg-amber-50/80 border border-amber-200/90 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-amber-900 text-xs">
+          <div className="p-3.5 rounded-xl bg-amber-500/15 border border-amber-400/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-amber-200 text-xs">
             <div className="flex items-center gap-2.5">
-              <Lock className="w-4 h-4 text-amber-700 shrink-0" />
+              <Lock className="w-4 h-4 text-amber-300 shrink-0" />
               <span>
                 <strong>Sign in required:</strong> Log in to generate custom questionnaires, analyze textbook PDFs, and save assessments.
               </span>
@@ -390,7 +572,7 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
               type="button"
               onClick={() => onOpenAuth?.('signin')}
               id="btn-banner-sign-in-prompt"
-              className="shrink-0 px-3.5 py-1.5 bg-amber-700 hover:bg-amber-800 text-white font-semibold text-xs rounded-lg transition-colors cursor-pointer"
+              className="shrink-0 px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-lg transition-colors cursor-pointer"
             >
               Sign In / Register
             </button>
@@ -399,7 +581,7 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
 
         {/* Error message */}
         {error && (
-          <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2 font-medium">
+          <div className="p-3 rounded-xl bg-rose-500/20 border border-rose-400 text-rose-200 text-xs flex items-center gap-2 font-medium">
             <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0" />
             <span>{error}</span>
           </div>
@@ -407,7 +589,7 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
 
         {/* Primary Prompt Input Bar */}
         <div className="space-y-2">
-          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+          <label className={`block text-xs uppercase tracking-wider ${promptTheme.label}`}>
             Assessment Topic or Standard
           </label>
           <div className="relative flex flex-col sm:flex-row gap-2">
@@ -419,13 +601,13 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
                 placeholder="e.g., Photosynthesis, Fraction Operations, US Constitution, தமிழ் திருக்குறள்..."
                 disabled={isGenerating}
                 id="input-questionnaire-topic"
-                className="w-full pl-3.5 pr-10 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm font-medium text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all placeholder:text-slate-400"
+                className={`w-full pl-3.5 pr-10 py-3 rounded-xl text-sm font-medium border outline-none transition-all ${promptTheme.input}`}
               />
               {topic && !isGenerating && (
                 <button
                   type="button"
                   onClick={() => setTopic('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs p-1"
+                  className={`absolute right-3 top-1/2 -translate-y-1/2 text-xs p-1 ${promptTheme.inputClear}`}
                   title="Clear topic"
                 >
                   ✕
@@ -438,9 +620,9 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
                 type="button"
                 onClick={() => onOpenAuth?.('signin')}
                 id="btn-home-generate-questionnaire"
-                className="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer"
+                className="px-5 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer shadow-xs"
               >
-                <Lock className="w-4 h-4 text-indigo-200" />
+                <Lock className="w-4 h-4 text-purple-200" />
                 <span>Sign In to Build</span>
               </button>
             ) : (
@@ -448,16 +630,16 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
                 type="submit"
                 disabled={isGenerating || !topic.trim()}
                 id="btn-home-generate-questionnaire"
-                className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 shrink-0 active:scale-98 shadow-xs"
+                className={`px-6 py-3 rounded-xl font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 shrink-0 active:scale-98 shadow-md ${promptTheme.primaryBtn}`}
               >
                 {isGenerating ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin text-current" />
                     <span>Generating...</span>
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-4 h-4 text-amber-300" />
+                    <Sparkles className="w-4 h-4 fill-current" />
                     <span>Generate Assessment</span>
                   </>
                 )}
@@ -468,33 +650,17 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
 
         {/* Quick Topic Starter Chips */}
         <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1 mr-1">
-            <Lightbulb className="w-3.5 h-3.5 text-amber-500" />
-            <span>Popular:</span>
+          <span className={`text-[11px] font-semibold uppercase tracking-wider flex items-center gap-1 mr-1 ${promptTheme.popularLabel}`}>
+            <Lightbulb className="w-3.5 h-3.5 text-amber-400" />
+            <span>Popular Topics:</span>
           </span>
-          {onOpenBookPdfModal && (
-            <button
-              type="button"
-              onClick={() => {
-                if (!userIsLoggedIn) {
-                  onOpenAuth?.('signin');
-                  return;
-                }
-                onOpenBookPdfModal('question_paper');
-              }}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-gradient-to-r from-violet-50 to-indigo-50 hover:from-violet-100 hover:to-indigo-100 text-indigo-900 border border-indigo-200 transition-colors cursor-pointer shadow-2xs"
-            >
-              <Sparkles className="w-3 h-3 text-indigo-600" />
-              <span>📄 Upload Question Paper PDF (Set B)</span>
-            </button>
-          )}
           {QUICK_TOPICS.map((item, idx) => (
             <button
               key={idx}
               type="button"
               onClick={() => handleQuickTopic(item)}
               disabled={isGenerating}
-              className="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 hover:bg-indigo-50 text-slate-700 hover:text-indigo-700 border border-slate-200/80 hover:border-indigo-200 transition-colors"
+              className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${promptTheme.popularChip}`}
             >
               {item.label}
             </button>
@@ -502,10 +668,10 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
         </div>
 
         {/* Core Controls Grid: Subject & Grade, Complexity, Volume, Format */}
-        <div className="pt-3 border-t border-slate-200 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className={`pt-3 border-t ${promptTheme.divider} grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4`}>
           {/* Subject Selector */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+            <label className={`text-xs uppercase tracking-wider block ${promptTheme.label}`}>
               Subject Domain
             </label>
             <select
@@ -515,10 +681,10 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
                 setUserSelectedSubject(true);
               }}
               disabled={isGenerating}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 cursor-pointer"
+              className={`w-full px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer outline-none ${promptTheme.select}`}
             >
               {SUBJECTS.map((s) => (
-                <option key={s} value={s}>
+                <option key={s} value={s} className="bg-slate-900 text-white">
                   {s}
                 </option>
               ))}
@@ -527,7 +693,7 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
 
           {/* Grade Level */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+            <label className={`text-xs uppercase tracking-wider block ${promptTheme.label}`}>
               Target Grade
             </label>
             <select
@@ -537,10 +703,10 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
                 setUserSelectedGrade(true);
               }}
               disabled={isGenerating}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 cursor-pointer"
+              className={`w-full px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer outline-none ${promptTheme.select}`}
             >
               {GRADE_LEVELS.map((g) => (
-                <option key={g} value={g}>
+                <option key={g} value={g} className="bg-slate-900 text-white">
                   {g}
                 </option>
               ))}
@@ -550,14 +716,14 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
           {/* Complexity Level */}
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+              <label className={`text-xs uppercase tracking-wider ${promptTheme.label}`}>
                 Complexity
               </label>
-              <span className="text-[10px] font-bold text-indigo-600 capitalize">
+              <span className="text-[10px] font-bold text-amber-400 capitalize">
                 {difficulty}
               </span>
             </div>
-            <div className="grid grid-cols-3 gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
+            <div className={`grid grid-cols-3 gap-1 ${promptTheme.segmentBox}`}>
               {COMPLEXITY_LEVELS.map((lvl) => {
                 const isSelected =
                   difficulty === lvl.id ||
@@ -574,8 +740,8 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
                     id={`btn-complexity-${lvl.id}`}
                     className={`py-1.5 rounded-lg text-xs font-semibold text-center transition-all ${
                       isSelected
-                        ? 'bg-white text-indigo-700 shadow-xs'
-                        : 'text-slate-600 hover:text-slate-900'
+                        ? promptTheme.segmentActive
+                        : promptTheme.segmentInactive
                     }`}
                   >
                     {lvl.label}
@@ -588,11 +754,11 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
           {/* Question Format */}
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+              <label className={`text-xs uppercase tracking-wider ${promptTheme.label}`}>
                 Question Format
               </label>
             </div>
-            <div className="grid grid-cols-3 gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
+            <div className={`grid grid-cols-3 gap-1 ${promptTheme.segmentBox}`}>
               {QUESTION_FORMATS.map((fmt) => {
                 const isSelected = questionFormat === fmt.id;
                 const shortLabel =
@@ -607,8 +773,8 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
                     title={fmt.label}
                     className={`py-1.5 rounded-lg text-xs font-semibold text-center transition-all ${
                       isSelected
-                        ? 'bg-white text-indigo-700 shadow-xs'
-                        : 'text-slate-600 hover:text-slate-900'
+                        ? promptTheme.segmentActive
+                        : promptTheme.segmentInactive
                     }`}
                   >
                     {shortLabel}
@@ -620,9 +786,9 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
         </div>
 
         {/* Question Count Pill Bar */}
-        <div className="flex items-center justify-between pt-2 border-t border-slate-100 flex-wrap gap-2">
+        <div className={`flex items-center justify-between pt-2 border-t ${promptTheme.divider} flex-wrap gap-2`}>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+            <span className={`text-xs uppercase tracking-wider ${promptTheme.label}`}>
               Question Volume:
             </span>
             <div className="flex items-center gap-1">
@@ -633,10 +799,10 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
                   onClick={() => setQuestionCount(cnt)}
                   disabled={isGenerating}
                   id={`btn-question-count-${cnt}`}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                     questionCount === cnt
-                      ? 'bg-indigo-600 text-white shadow-xs'
-                      : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                      ? promptTheme.countActive
+                      : promptTheme.countInactive
                   }`}
                 >
                   {cnt}
@@ -644,25 +810,62 @@ export const HomePromptWindow: React.FC<HomePromptWindowProps> = ({
               ))}
             </div>
           </div>
-          <span className="text-[11px] text-slate-400 font-medium">
+          <span className={`text-[11px] font-medium ${promptTheme.countSubtext}`}>
             3-5 for quick warmup • 8-10 for standard quiz • 15-20 for full test
           </span>
         </div>
 
         {/* Expandable Custom Instructions Panel */}
         {showOptions && (
-          <div className="pt-3 border-t border-slate-200 animate-fadeIn">
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-              Custom Directives & Language Constraints (Optional)
-            </label>
+          <div className={`pt-3 border-t ${promptTheme.divider} animate-fadeIn space-y-2`}>
+            <div className="flex items-center justify-between">
+              <label className={`text-xs uppercase tracking-wider ${promptTheme.label}`}>
+                Custom Directives & Language Constraints
+              </label>
+              {specialInstructions && (
+                <button
+                  type="button"
+                  onClick={() => setSpecialInstructions('')}
+                  className="text-[11px] font-semibold text-rose-400 hover:underline cursor-pointer"
+                >
+                  Clear Directives
+                </button>
+              )}
+            </div>
             <input
               type="text"
               value={specialInstructions}
               onChange={(e) => setSpecialInstructions(e.target.value)}
-              placeholder="e.g., Provide all questions and answers in Tamil, include hints, focus on real-world application..."
+              placeholder="e.g., Provide questions and explanations in Tamil, include hint tips, real-world context..."
               disabled={isGenerating}
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all placeholder:text-slate-400"
+              className={`w-full px-3.5 py-2.5 rounded-xl text-xs font-medium border outline-none transition-all ${promptTheme.input}`}
             />
+            {/* Quick Directive Preset Tags */}
+            <div className="flex items-center gap-1.5 flex-wrap pt-1 text-[11px]">
+              <span className={`font-medium mr-1 ${promptTheme.popularLabel}`}>Quick presets:</span>
+              {[
+                'Include step-by-step hints',
+                'Scaffold with word bank',
+                'Focus on real-world scenarios',
+                'Language: தமிழ் (Tamil)',
+                'Language: Español (Spanish)',
+                'Include challenge bonus question',
+              ].map((preset) => (
+                <button
+                  key={preset}
+                  type="button"
+                  onClick={() => {
+                    if (specialInstructions.includes(preset)) return;
+                    setSpecialInstructions(
+                      specialInstructions ? `${specialInstructions}; ${preset}` : preset
+                    );
+                  }}
+                  className={`px-2 py-0.5 rounded-md border transition-colors cursor-pointer ${promptTheme.presetChip}`}
+                >
+                  + {preset}
+                </button>
+              ))}
+            </div>
           </div>
         )}
       </form>
